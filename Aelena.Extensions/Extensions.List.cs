@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Aelena.Extensions.StringExtensions;
+using Aelena.SimpleExtensions.StringExtensions;
 
-namespace Aelena.Extensions.ListExtensions
+namespace Aelena.SimpleExtensions.ListExtensions
 {
 	public static class Extensions
 	{

@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
-using Aelena.Extensions.ListExtensions;
-using Aelena.Extensions.StringExtensions;
+using Aelena.SimpleExtensions.ListExtensions;
+using Aelena.SimpleExtensions.StringExtensions;
 
-namespace Aelena.Extensions.Tests
+namespace Aelena.SimpleExtensions.Tests
 {
 	[TestFixture]
 	public class ExtensionsTests

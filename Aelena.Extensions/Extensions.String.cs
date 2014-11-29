@@ -7,7 +7,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace Aelena.Extensions.StringExtensions
+namespace Aelena.SimpleExtensions.StringExtensions
 {
 	public static class Extensions
 	{

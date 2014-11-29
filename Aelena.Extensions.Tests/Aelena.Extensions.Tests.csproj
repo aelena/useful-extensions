@@ -7,7 +7,7 @@
     <ProjectGuid>{293D3C60-02A7-47BB-A38D-AFB5CAF5BC92}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Aelena.Extensions.Tests</RootNamespace>
+    <RootNamespace>Aelena.SimpleExtensions.Tests</RootNamespace>
     <AssemblyName>Aelena.Extensions.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

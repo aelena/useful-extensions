@@ -7,7 +7,7 @@
     <ProjectGuid>{397855DF-FCCA-4A5D-AA64-87C168BBC745}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Aelena.Extensions</RootNamespace>
+    <RootNamespace>Aelena.SimpleExtensions</RootNamespace>
     <AssemblyName>Aelena.Extensions</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

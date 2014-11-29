@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Aelena.Extensions
+namespace Aelena.SimpleExtensions
 {
     public static class Extensions
     {
