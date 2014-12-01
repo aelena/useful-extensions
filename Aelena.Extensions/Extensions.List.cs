@@ -146,7 +146,7 @@ namespace Aelena.SimpleExtensions.ListExtensions
 		public static bool ContainsAny<T> ( this IEnumerable<T> list, IEnumerable<T> searches )
 		{
 			if ( list == null )
-				throw new ArgumentNullException ( "the list cannot be null.", "list" );
+				throw new ArgumentNullException ( "list", "the list cannot be null." );
 
 			if ( searches != null )
 				foreach ( var s in searches )

@@ -77,6 +77,12 @@ namespace Aelena.SimpleExtensions.StringExtensions
 		  // ---------------------------------------------------------------------------------
 
 
+		/// <summary>
+		/// This is an extension method that provides a safe version of Substring operation
+		/// so that if the object is null an empty string is returned.
+		/// </summary>
+		/// <param name="str"></param>
+		/// <returns></returns>
 		public static string SubstringSafe ( this String str, int startIndex, int length )
 		{
 			if ( !String.IsNullOrEmpty ( str ) && startIndex >= 0 && str.Length >= startIndex + length )
@@ -500,7 +506,7 @@ namespace Aelena.SimpleExtensions.StringExtensions
 		/// otherwise.</returns>
 		/// <exception cref="ArgumentNullException"/>
 		/// <exception cref="Exception" />
-		public static string TakeBetween ( this string value, string beginningString, string endString )
+		public static string TakeBetween ( this string value, string beginningString, string endString, bool trimResults = false )
 		{
 			if ( String.IsNullOrWhiteSpace ( value ) )
 				throw new ArgumentNullException ( "String instance cannot be null" );
@@ -531,6 +537,9 @@ namespace Aelena.SimpleExtensions.StringExtensions
 				return String.Empty;
 
 			_index1 += beginningString.Length;
+
+			if ( trimResults )
+				return value.Substring ( _index1, _index2 - _index1 ).Trim ();
 
 			return value.Substring ( _index1, _index2 - _index1 );
 
@@ -607,12 +616,27 @@ namespace Aelena.SimpleExtensions.StringExtensions
 		// ---------------------------------------------------------------------------------
 
 
+		/// <summary>
+		/// Returns a new string that represent whatever is between the first and the second marker string.
+		/// It's like a Substring operation, only that it works by indicating other strings.
+		/// This overload is different as it allows the caller to specify an initial marker string so that the
+		/// search is performed only after that marker string's position.
+		/// not indices or positions.
+		/// </summary>
+		/// <param name="value">String to search.</param>
+		/// <param name="markString">marker strings that marks the initial substring for comparison</param>
+		/// <param name="beginningString"></param>
+		/// <param name="endString"></param>
+		/// <param name="trimResults"></param>
+		/// <returns></returns>
+		/// <exception cref="ArgumentNullException"/>
+		/// <exception cref="IndexOutOfRangeException"/>
 		public static string TakeBetween ( this string value, string markString, string beginningString, string endString, bool trimResults = false )
 		{
 			if ( String.IsNullOrWhiteSpace ( value ) )
-				throw new ArgumentException ( "value", "String cannot be null" );
-			if ( String.IsNullOrWhiteSpace ( markString ) )
-				throw new ArgumentException ( "markString", "String cannot be null or white space" );
+				throw new ArgumentNullException ( "value", "String cannot be null" );
+			if ( String.IsNullOrEmpty ( markString ) )
+				throw new ArgumentNullException ( "markString", "String cannot be null or white space" );
 			if ( String.IsNullOrEmpty ( beginningString ) )
 				throw new ArgumentNullException ( "beginningString", "String instance cannot be null or empty" );
 			if ( String.IsNullOrEmpty ( beginningString ) )
@@ -627,7 +651,7 @@ namespace Aelena.SimpleExtensions.StringExtensions
 				return value;
 
 			if ( _index2 < _index1 )
-				throw new Exception ( "End string cannot appear earlier than beginning string" );
+				throw new IndexOutOfRangeException ( "End string cannot appear earlier than beginning string" );
 
 			_index1 += beginningString.Length;
 
@@ -736,13 +760,25 @@ namespace Aelena.SimpleExtensions.StringExtensions
 
 
 		// ---------------------------------------------------------------------------------
+
+
+		/// <summary>
+		/// Returns a new string where only the first occurrence of a string is replaced
+		/// by the designed replacement string.
+		/// </summary>
+		/// <param name="subject">Instance on which to perform the replacement.</param>
+		/// <param name="occurrenceToRemove">String to be replaced.</param>
+		/// <param name="replacement">Replacement string.</param>
+		/// <returns>A new string where only the first occurrence of a string is replaced
+		/// by the designed replacement string.</returns>
+		/// <exception cref="ArgumentNullException"/>
 		public static string ReplaceFirst ( this string subject, string occurrenceToRemove, string replacement = "" )
 		{
 
 			if ( String.IsNullOrWhiteSpace ( subject ) )
-				throw new ArgumentException ( "String cannot be null (subject)" );
-			if ( String.IsNullOrWhiteSpace ( occurrenceToRemove ) )
-				throw new ArgumentException ( "String cannot be null (occurrenceToRemove)" );
+				throw new ArgumentNullException ( "subject", "String cannot be null" );
+			if ( String.IsNullOrEmpty ( occurrenceToRemove ) )
+				throw new ArgumentNullException ( "occurrenceToRemove", "String cannot be null" );
 
 			var i = subject.IndexOf ( occurrenceToRemove );
 
@@ -756,13 +792,23 @@ namespace Aelena.SimpleExtensions.StringExtensions
 		// ---------------------------------------------------------------------------------
 
 
+		/// <summary>
+		/// Returns a new string where only the last occurrence of a string is replaced
+		/// by the designed replacement string.
+		/// </summary>
+		/// <param name="subject">Instance on which to perform the replacement.</param>
+		/// <param name="occurrenceToRemove">String to be replaced.</param>
+		/// <param name="replacement">Replacement string.</param>
+		/// <returns>A new string where only the last occurrence of a string is replaced
+		/// by the designed replacement string.</returns>
+		/// <exception cref="ArgumentNullException"/>
 		public static string ReplaceLast ( this string subject, string occurrenceToRemove, string replacement = "" )
 		{
 
 			if ( String.IsNullOrWhiteSpace ( subject ) )
-				throw new ArgumentException ( "String cannot be null (subject)" );
-			if ( String.IsNullOrWhiteSpace ( occurrenceToRemove ) )
-				throw new ArgumentException ( "String cannot be null (occurrenceToRemove)" );
+				throw new ArgumentNullException ( "subject", "String cannot be null" );
+			if ( String.IsNullOrEmpty ( occurrenceToRemove ) )
+				throw new ArgumentNullException ( "occurrenceToRemove", "String cannot be null" );
 
 			var i = subject.LastIndexOf ( occurrenceToRemove );
 			if ( i >= 0 )
@@ -775,6 +821,16 @@ namespace Aelena.SimpleExtensions.StringExtensions
 		// ---------------------------------------------------------------------------------
 
 
+		/// <summary>
+		/// Returns a new string where only the first and the last occurrences of a string is replaced
+		/// by the designed replacement string.
+		/// </summary>
+		/// <param name="subject">Instance on which to perform the replacement.</param>
+		/// <param name="occurrenceToRemove">String to be replaced.</param>
+		/// <param name="replacement">Replacement string.</param>
+		/// <returns>A new string where only the first and the last occurrence of a string is replaced
+		/// by the designed replacement string.</returns>
+		/// <exception cref="ArgumentNullException"/>
 		public static string ReplaceFirstAndLastOnly ( this string subject, string occurrenceToRemove, string replacement = "" )
 		{
 			if ( String.IsNullOrWhiteSpace ( subject ) )
@@ -794,7 +850,7 @@ namespace Aelena.SimpleExtensions.StringExtensions
 
 		/// <summary>
 		/// Returns a new string in which the last ocurrence of a specified string 
-		/// within this instance has been removed
+		/// within this instance has been removed.
 		/// </summary>
 		/// <param name="subject"></param>
 		/// <param name="removee">string to remove from the instance.</param>
