@@ -6,6 +6,8 @@ using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Aelena.SimpleExtensions.ListExtensions;
+using Aelena.SimpleExtensions.ObjectExtensions;
 
 namespace Aelena.SimpleExtensions.StringExtensions
 {
@@ -14,7 +16,7 @@ namespace Aelena.SimpleExtensions.StringExtensions
 
 
 		/// <summary>
-		/// This is an extension method that provides a safe version of ToString
+		/// Provides a safe version of ToString()
 		/// so that if the string is null an empty string is returned 
 		/// </summary>
 		/// <param name="str"></param>
@@ -25,60 +27,30 @@ namespace Aelena.SimpleExtensions.StringExtensions
 		}
 
 
-		  // ---------------------------------------------------------------------------------
+		// ---------------------------------------------------------------------------------
 
-
-		/// <summary>
-		/// This is an extension method that provides a safe version of ToString
-		/// so that if the object is null an empty string is returned 
-		/// </summary>
-		/// <param name="str"></param>
-		/// <returns></returns>
-		public static string ToStringSafe ( this Object obj )
-		{
-			return ToStringSafe ( obj, String.Empty );
-		}
-
-
-		  // ---------------------------------------------------------------------------------
 
 
 		/// <summary>
-		/// This is an extension method that provides a safe version of ToString
+		/// Provides a safe version of ToString()
 		/// and allows the caller to specify a default return value so that if the
 		/// string is null the return value will be used.
 		/// </summary>
 		/// <param name="str"></param>
 		/// <param name="defaultValue"></param>
-		/// <returns></returns>
-		public static string ToStringSafe ( this object obj, string defaultValue )
-		{
-			return ( null == obj ) ? ( ( null == defaultValue ) ? String.Empty : defaultValue ) : Convert.ToString ( obj );
-		}
-
-
-		  // ---------------------------------------------------------------------------------
-
-
-		/// <summary>
-		/// This is an extension method that provides a safe version of to string
-		/// and allows the caller to specify a default return value so that if the
-		/// string is null the return value will be used.
-		/// </summary>
-		/// <param name="str"></param>
-		/// <param name="defaultValue"></param>
-		/// <returns></returns>
+		/// <returns>Returns the object ToString output or the provided string
+		/// value if the object is null.</returns>
 		public static string ToStringSafe ( this String str, string defaultValue )
 		{
 			return ( null == str ) ? ( ( null == defaultValue ) ? String.Empty : defaultValue ) : str;
 		}
 
 
-		  // ---------------------------------------------------------------------------------
+		// ---------------------------------------------------------------------------------
 
 
 		/// <summary>
-		/// This is an extension method that provides a safe version of Substring operation
+		/// Provides a safe version of Substring operation
 		/// so that if the object is null an empty string is returned.
 		/// </summary>
 		/// <param name="str"></param>
@@ -93,37 +65,8 @@ namespace Aelena.SimpleExtensions.StringExtensions
 		}
 
 
-		  // ---------------------------------------------------------------------------------
-
-
-		/// <summary>
-		/// Provides an enhanced ToString() that shows all public properties of a given object,
-		/// (using reflection) which can be useful for debugging, logging, etc.
-		/// </summary>
-		/// <param name="t"></param>
-		/// <returns></returns>
-		public static string ToStringExpanded ( this object t )
-		{
-			if ( null == t )
-				return String.Empty;
-
-			StringBuilder _sb = new StringBuilder ();
-
-			var _list = t.GetType ().GetProperties ();
-
-
-			foreach ( var _l in _list )
-			{
-				_sb.AppendFormat ( "{0} : {1}{2}", _l.Name, _l.GetValue ( t, null ), " - " );
-			}
-
-			// cut trailing stuff
-			return _sb.ToString ().Substring ( 0, _sb.Length - 3 );
-
-		}
-
-
 		// ---------------------------------------------------------------------------------
+
 
 
 		/// <summary>
@@ -197,18 +140,18 @@ namespace Aelena.SimpleExtensions.StringExtensions
 
 		/// <summary>
 		/// Extension method to interpolate a templated string with actual values from and object
-		/// passed as an argument.
+		/// passed as an argument. By default it examines only Public and Instance fields.
 		/// </summary>
 		/// <param name="_string">templated string</param>
-		/// <param name="o">instance containing value</param>
+		/// <param name="instance">instance containing value</param>
 		/// <returns></returns>
-		public static string Interpolate ( this string _string, object o )
+		public static string Interpolate ( this string _string, object instance )
 		{
 			string _interpolated = "";
-			if ( !( String.IsNullOrEmpty ( _string ) ) && o != null )
+			if ( !( String.IsNullOrEmpty ( _string ) ) && instance != null )
 			{
-				foreach ( var x in from x in o.GetType ().GetProperties ( BindingFlags.Public | BindingFlags.Instance ) select x.Name )
-					_interpolated = _interpolated.Replace ( "#{" + x + "}", o.GetType ().GetProperty ( x ).GetValue ( o, null ).ToStringSafe () );
+				foreach ( var x in from x in instance.GetType ().GetProperties ( BindingFlags.Public | BindingFlags.Instance ) select x.Name )
+					_interpolated = _interpolated.Replace ( "#{" + x + "}", instance.GetType ().GetProperty ( x ).GetValue ( instance, null ).ToStringSafe () );
 			}
 			return _interpolated;
 		}
@@ -708,7 +651,8 @@ namespace Aelena.SimpleExtensions.StringExtensions
 
 
 		/// <summary>
-		/// Returns a new string with all the occurrences of the specified list removed.
+		/// Returns a new string with all the occurrences of the specified list of
+		/// string values removed.
 		/// </summary>
 		/// <param name="subject"></param>
 		/// <param name="occurrencesToRemove"></param>
@@ -725,37 +669,6 @@ namespace Aelena.SimpleExtensions.StringExtensions
 				subject = subject.Replace ( o, "" );
 
 			return subject;
-		}
-
-
-		// ---------------------------------------------------------------------------------
-
-		public static string Take ( this string subject, int index )
-		{
-			if ( String.IsNullOrWhiteSpace ( subject ) )
-				throw new ArgumentException ( "String cannot be null (subject)" );
-			if ( index < 0 )
-				throw new ArgumentException ( "Index cannot be zero or less than zero." );
-
-			return subject.Substring ( 0, index );
-
-		}
-
-
-		// ---------------------------------------------------------------------------------
-
-
-		public static string Skip ( this string subject, int index )
-		{
-			if ( String.IsNullOrWhiteSpace ( subject ) )
-				throw new ArgumentException ( "String cannot be null (subject)" );
-			if ( index < 0 )
-				throw new ArgumentException ( "Index cannot be zero or less than zero." );
-			if ( index > subject.Length )
-				throw new ArgumentException ( "Index cannot be bigger than actual string length" );
-
-			return subject.Substring ( index );
-
 		}
 
 
@@ -874,5 +787,146 @@ namespace Aelena.SimpleExtensions.StringExtensions
 
 		// ---------------------------------------------------------------------------------
 
+
+
+		/// <summary>
+		/// Returns a list of integers that indicate all the positions
+		/// where the search string has been found in the original string.
+		/// </summary>
+		/// <param name="value"></param>
+		/// <param name="search"></param>
+		/// <param name="ignoreCase"></param>
+		/// <returns></returns>
+		public static IEnumerable<int> IndicesOfAll ( this string value, string search, bool ignoreCase = false )
+		{
+			// TODO: ADD EXCEPTION CONTROL
+			// TODO: ADD CULTURE AND COMPARISON INFO
+
+			var i = 0;
+			var _indices = new List<int> ();
+			if ( !ignoreCase )
+			{
+				while ( ( i = value.IndexOf ( search, i ) ) != -1 )
+				{
+					_indices.Add ( i++ );
+				}
+			}
+			else
+			{
+				while ( ( i = value.ToUpperInvariant ().IndexOf ( search.ToUpperInvariant (), i ) ) != -1 )
+				{
+					_indices.Add ( i++ );
+				}
+			}
+			return _indices;
+		}
+
+
+
+		// ---------------------------------------------------------------------------------
+
+
+		/// <summary>
+		/// Returns a new string that is a substring of all the characters
+		/// between the opening and closing marking characters provided.
+		/// </summary>
+		/// <param name="value"></param>
+		/// <param name="s1"></param>
+		/// <param name="s2"></param>
+		/// <param name="includeMarkers"></param>
+		/// <returns></returns>
+		public static IEnumerable<String> FindAllBetween ( this string value, string s1, string s2, bool includeMarkers = false )
+		{
+			int _1 = 0;
+			var _occurrences = new List<String> ();
+
+			if ( !includeMarkers )
+			{
+				while ( ( _1 = value.IndexOf ( s1, _1 ) ) != -1 )
+				{
+					var _2 = value.IndexOf ( s2, _1 + 1 );
+					if ( _2 != -1 )
+					{
+						_occurrences.Add ( value.Substring ( ++_1, _2 - _1 ) );
+					}
+					_1 += _2 - _1;
+					if ( _1 == -1 )
+						break;
+				}
+			}
+			else
+			{
+				while ( ( _1 = value.IndexOf ( s1, _1 ) ) != -1 )
+				{
+					var _2 = value.IndexOf ( s2, _1 + 1 );
+					if ( _2 != -1 )
+					{
+						//_occurrences.Add ( value.Substring ( _1, ++_2 - _1 ) );
+						_occurrences.Add ( value.Substring ( _1, _2 + s2.Length - _1 ) );
+					}
+					_1 += _2 - _1;
+					if ( _1 == -1 )
+						break;
+				}
+			}
+			return _occurrences;
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
+		/// <summary>
+		/// Returns a list of key-value pairs that indicate the positions and the strings themselves
+		/// from the list of strings to be searched for that have been found on the searched string.
+		/// </summary>
+		/// <param name="value">String to be searched.</param>
+		/// <param name="searches">List of strings to be searched for in the instance.</param>
+		/// <param name="ignoreCase">Boolean parameter to indicate if the search is to be case 
+		/// sensitive or not.</param>
+		/// <returns>A list of <typeparamref name="KeyValuePair"/> with the index of string
+		/// of each occurrence.</returns>
+		public static IEnumerable<KeyValuePair<int, string>> IndicesOfAll2 ( this string value, IEnumerable<string> searches, bool ignoreCase = false )
+		{
+			// TODO: ADD EXCEPTION CONTROL
+			// TODO: ADD CULTURE AND COMPARISON INFO
+
+			if ( String.IsNullOrEmpty ( value ) )
+				return null;
+
+			if ( !searches.HasElements () )
+				throw new ArgumentNullException ( "searches", "The list must contain at least one element" );
+
+			var i = 0;
+			var _indices = new List<KeyValuePair<int, string>> ();
+			foreach ( var search in searches )
+			{
+				// reset counter here otherwise further operations fail
+				i = 0;
+				if ( !ignoreCase )
+				{
+					while ( ( i = value.IndexOf ( search, i ) ) != -1 )
+					{
+						_indices.Add ( new KeyValuePair<int, string> ( i++, search ) );
+					}
+				}
+				else
+				{
+					while ( ( i = value.ToUpperInvariant ().IndexOf ( search.ToUpperInvariant (), i ) ) != -1 )
+					{
+						_indices.Add ( new KeyValuePair<int, string> ( i++, search ) );
+					}
+				}
+			}
+
+			return _indices;
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
+
 	}
 }
+
+
