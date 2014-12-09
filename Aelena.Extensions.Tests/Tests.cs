@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using NUnit.Framework;
 using Aelena.SimpleExtensions.ListExtensions;
 using Aelena.SimpleExtensions.StringExtensions;
+using Aelena.SimpleExtensions.ObjectExtensions;
 
 namespace Aelena.SimpleExtensions.Tests
 {
@@ -29,7 +30,7 @@ namespace Aelena.SimpleExtensions.Tests
 		}
 
 		[Test]
-		public void NullObjectIsSafelyReturnedAsEmptyString ( )
+		public void NullObjectIsSafelyReturnedAsEmptyString ()
 		{
 			Object _o = null;
 			Assert.IsTrue ( String.Empty.Equals ( _o.ToStringSafe () ) );
@@ -158,7 +159,7 @@ namespace Aelena.SimpleExtensions.Tests
 		[Test]
 		public void InterpolateObject_1 ()
 		{
-			Order order = new Order () { Name = "Sample Order", Description = "Order for 500 beer cans", Date = DateTime.Today, OrderID = 43 };
+			var order = new Order () { Name = "Sample Order", Description = "Order for 500 beer cans", Date = DateTime.Today, OrderID = 43 };
 			string template = "this is the summary for Order '#{Name}', ordered on #{Date}. Order # is #{OrderID} ( '#{Description}' )";
 			var _interpolated = template.Interpolate ( order );
 
@@ -800,7 +801,7 @@ namespace Aelena.SimpleExtensions.Tests
 
 
 		[Test]
-		public void InsertMultiple_Test01 ()
+		public void InsertMultiple_Test02 ()
 		{
 			var words = new List<string> { "hey", "you", "what", "doing" };
 			var insertees = new List<KeyValuePair<int, string>> ();
@@ -812,7 +813,53 @@ namespace Aelena.SimpleExtensions.Tests
 			var _new = words.InsertMultiple ( insertees );
 		}
 
+		[Test]
+		public void InsertMultiple_Test01 ()
+		{
+			var arr = new List<string> { "A", "C", "E", "H", "J", null };
+			var insertees = new List<KeyValuePair<int, string>> ();
+			insertees.Add ( new KeyValuePair<int, string> ( 1, "B" ) );
+			insertees.Add ( new KeyValuePair<int, string> ( 2, "D" ) );
+			insertees.Add ( new KeyValuePair<int, string> ( 3, "G" ) );
+			insertees.Add ( new KeyValuePair<int, string> ( 0, null ) );
+			var _new = arr.InsertMultiple ( insertees );
+			Assert.That ( _new.Count () == 10 );
+			Assert.That ( _new.Last () == null );
+			Assert.That ( _new.First () == null );
+		}
+
 		// ---------------------------------------------------------------------------------
+
+
+		[Test]
+		public void GetKeys_Test_01 ()
+		{
+			var insertees = new List<KeyValuePair<int, string>> ();
+			insertees.Add ( new KeyValuePair<int, string> ( 1, "B" ) );
+			insertees.Add ( new KeyValuePair<int, string> ( 2, "D" ) );
+			insertees.Add ( new KeyValuePair<int, string> ( 3, "G" ) );
+			var _keys = insertees.GetKeys ();
+			Assert.That ( _keys.Count () == 3 );
+			Assert.That ( _keys.First () == 1 );
+			Assert.That ( _keys.Last () == 3 );
+		}
+
+		[Test]
+		public void GetKeys_Test_02 ()
+		{
+			var insertees = new List<Tuple<int, string>> ();
+			insertees.Add ( new Tuple<int, string> ( 1, "B" ) );
+			insertees.Add ( new Tuple<int, string> ( 2, "D" ) );
+			insertees.Add ( new Tuple<int, string> ( 3, "G" ) );
+			var _keys = insertees.GetKeys ();
+			Assert.That ( _keys.Count () == 3 );
+			Assert.That ( _keys.First () == 1 );
+			Assert.That ( _keys.Last () == 3 );
+		}
+
+
+		// ---------------------------------------------------------------------------------
+
 
 		[Test]
 		public void IsFirstTest_01 ()
@@ -1006,28 +1053,28 @@ namespace Aelena.SimpleExtensions.Tests
 		public void HasItems_Test ()
 		{
 			List<string> list = null;
-			Assert.That ( !list.HasItems () );
+			Assert.That ( !list.HasElements () );
 		}
 
 		[Test]
 		public void HasItems_Test_01 ()
 		{
 			List<string> list = new List<string> ();
-			Assert.That ( !list.HasItems () );
+			Assert.That ( !list.HasElements () );
 		}
 
 		[Test]
 		public void HasItems_Test_02 ()
 		{
 			List<string> list = new List<string> () { "" };
-			Assert.That ( list.HasItems () );
+			Assert.That ( list.HasElements () );
 		}
 
 		[Test]
 		public void HasItems_Test_03 ()
 		{
 			List<string> list = new List<string> () { "xx" };
-			Assert.That ( list.HasItems () );
+			Assert.That ( list.HasElements () );
 		}
 
 
@@ -1040,7 +1087,7 @@ namespace Aelena.SimpleExtensions.Tests
 			var a = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 			var c = a.TakeAfter ( x => x >= 6 );
 			Assert.That ( c.Count () == 4 );
-			Assert.That ( c.First() == 7 );
+			Assert.That ( c.First () == 7 );
 		}
 
 
@@ -1061,7 +1108,7 @@ namespace Aelena.SimpleExtensions.Tests
 
 			// do not confuse with .Where, this is just take what comes after the first matching
 			var c = people.TakeAfter ( x => x.Age > 40 );
-			Assert.That ( c.Count () == 3);
+			Assert.That ( c.Count () == 3 );
 			Assert.That ( c.First ().Name == "Linda" );
 			Assert.That ( c.Last ().Name == "Pixie" );
 		}
@@ -1069,6 +1116,12 @@ namespace Aelena.SimpleExtensions.Tests
 
 		// ---------------------------------------------------------------------------------
 
+
+		[TestCase ( "àëíôüñ", Result = "aeioun" )]
+		public string RemoveDiacritics_Tests ( string sut )
+		{
+			return sut.RemoveDiacritics ();
+		}
 
 	}
 
