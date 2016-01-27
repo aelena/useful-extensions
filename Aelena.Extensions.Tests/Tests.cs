@@ -290,17 +290,17 @@ namespace Aelena.SimpleExtensions.Tests
 		// ---------------------------------------------------------------------------------
 
 
-		[TestCase ( "this is my string yeah", false, Result = true )]
-		[TestCase ( "that is my string yeah", false, Result = false )]
-		[TestCase ( "well, yeah, about that...", false, Result = true )]
-		[TestCase ( "usually, an island are inhabited by islanders", true, Result = true )]
-		[TestCase ( "usually, island are inhabited by islanders", false, Result = true )]
-		[TestCase ( "usually, islands are inhabited by islanders", true, Result = false )]
-		[TestCase ( "usually, islands are inhabited by islanders", false, Result = true )]
-		[TestCase ( "the islanders were crazy", true, Result = false )]
-		[TestCase ( "the islanders were crazy", false, Result = true )]
-		[TestCase ( "", false, Result = false )]
-		[TestCase ( "", true, Result = false )]
+		[TestCase ( "this is my string yeah", false, ExpectedResult = true )]
+		[TestCase ( "that is my string yeah", false, ExpectedResult = false )]
+		[TestCase ( "well, yeah, about that...", false, ExpectedResult = true )]
+		[TestCase ( "usually, an island are inhabited by islanders", true, ExpectedResult = true )]
+		[TestCase ( "usually, island are inhabited by islanders", false, ExpectedResult = true )]
+		[TestCase ( "usually, islands are inhabited by islanders", true, ExpectedResult = false )]
+		[TestCase ( "usually, islands are inhabited by islanders", false, ExpectedResult = true )]
+		[TestCase ( "the islanders were crazy", true, ExpectedResult = false )]
+		[TestCase ( "the islanders were crazy", false, ExpectedResult = true )]
+		[TestCase ( "", false, ExpectedResult = false )]
+		[TestCase ( "", true, ExpectedResult = false )]
 		public bool ContainsAnyForStringTests ( string teststring, bool asWord )
 		{
 			var _ = teststring.ContainsAny ( new List<String> () { "no", "I", "don't", "know", "about", "this", "island" }, asWord );
@@ -311,18 +311,18 @@ namespace Aelena.SimpleExtensions.Tests
 		// ---------------------------------------------------------------------------------
 
 
-		[TestCase ( "this is my string yeah", "this", false, Result = "this" )]
-		[TestCase ( "that is my string yeah", "", false, Result = "" )]
-		[TestCase ( "well, yeah, about that...", "about", false, Result = "about" )]
-		[TestCase ( "usually, an island is inhabited by islanders", "island", true, Result = "island" )]
-		[TestCase ( "the islanders were crazy", "", true, Result = "" )]
-		[TestCase ( "the islanders were crazy", "island", false, Result = "island" )]
-		[TestCase ( "usually, island are inhabited by islanders", "island", true, Result = "island" )]
-		[TestCase ( "usually, island are inhabited by islanders", "island", false, Result = "island" )]
-		[TestCase ( "usually, islands are inhabited by islanders", "", true, Result = "" )]
-		[TestCase ( "usually, islands are inhabited by islanders", "island", false, Result = "island" )]
-		[TestCase ( "", "", false, Result = "" )]
-		[TestCase ( "", "", true, Result = "" )]
+		[TestCase ( "this is my string yeah", "this", false, ExpectedResult = "this" )]
+		[TestCase ( "that is my string yeah", "", false, ExpectedResult = "" )]
+		[TestCase ( "well, yeah, about that...", "about", false, ExpectedResult = "about" )]
+		[TestCase ( "usually, an island is inhabited by islanders", "island", true, ExpectedResult = "island" )]
+		[TestCase ( "the islanders were crazy", "", true, ExpectedResult = "" )]
+		[TestCase ( "the islanders were crazy", "island", false, ExpectedResult = "island" )]
+		[TestCase ( "usually, island are inhabited by islanders", "island", true, ExpectedResult = "island" )]
+		[TestCase ( "usually, island are inhabited by islanders", "island", false, ExpectedResult = "island" )]
+		[TestCase ( "usually, islands are inhabited by islanders", "", true, ExpectedResult = "" )]
+		[TestCase ( "usually, islands are inhabited by islanders", "island", false, ExpectedResult = "island" )]
+		[TestCase ( "", "", false, ExpectedResult = "" )]
+		[TestCase ( "", "", true, ExpectedResult = "" )]
 		public string ContainsAny2ForStringTests ( string teststring, string item, bool asWord )
 		{
 			var t = teststring.GetFirstOccurrence ( new List<String> () { "no", "I", "don't", "know", "about", "this", "island" }, asWord );
@@ -359,19 +359,19 @@ namespace Aelena.SimpleExtensions.Tests
 		// ---------------------------------------------------------------------------------
 
 
-		[TestCase ( null, "A", 1, Result = "A" )]
-		[TestCase ( "A", null, 1, Result = "A" )]
-		[TestCase ( "A", null, 3, Result = "A" )]
-		[TestCase ( "", "A", 1, Result = "A" )]
-		[TestCase ( "", "A", 0, Result = "" )]
-		[TestCase ( "", "A", 4, Result = "AAAA" )]
-		[TestCase ( null, "A", 4, Result = "AAAA" )]
-		[TestCase ( "test string", "\t", 3, Result = "\t\t\ttest string" )]
-		[TestCase ( "test string", "\t", -13, Result = "\ttest string" )]
-		[TestCase ( "test string", "\t", 1, Result = "\ttest string" )]
-		[TestCase ( "test string", "\t", 0, Result = "test string" )]
-		[TestCase ( "test string", "this is my ", 1, Result = "this is my test string" )]
-		[TestCase ( "test string", "this is my ", 3, Result = "this is my this is my this is my test string" )]
+		[TestCase ( null, "A", 1, ExpectedResult = "A" )]
+		[TestCase ( "A", null, 1, ExpectedResult = "A" )]
+		[TestCase ( "A", null, 3, ExpectedResult = "A" )]
+		[TestCase ( "", "A", 1, ExpectedResult = "A" )]
+		[TestCase ( "", "A", 0, ExpectedResult = "" )]
+		[TestCase ( "", "A", 4, ExpectedResult = "AAAA" )]
+		[TestCase ( null, "A", 4, ExpectedResult = "AAAA" )]
+		[TestCase ( "test string", "\t", 3, ExpectedResult = "\t\t\ttest string" )]
+		[TestCase ( "test string", "\t", -13, ExpectedResult = "\ttest string" )]
+		[TestCase ( "test string", "\t", 1, ExpectedResult = "\ttest string" )]
+		[TestCase ( "test string", "\t", 0, ExpectedResult = "test string" )]
+		[TestCase ( "test string", "this is my ", 1, ExpectedResult = "this is my test string" )]
+		[TestCase ( "test string", "this is my ", 3, ExpectedResult = "this is my this is my this is my test string" )]
 
 		public string PrependTests ( string s, string prepended, int reps )
 		{
@@ -382,19 +382,19 @@ namespace Aelena.SimpleExtensions.Tests
 		// ---------------------------------------------------------------------------------
 
 
-		[TestCase ( null, "A", 1, Result = "A" )]
-		[TestCase ( "A", null, 1, Result = "A" )]
-		[TestCase ( "A", null, 3, Result = "A" )]
-		[TestCase ( "", "A", 1, Result = "A" )]
-		[TestCase ( "", "A", 0, Result = "" )]
-		[TestCase ( "", "A", 4, Result = "AAAA" )]
-		[TestCase ( null, "A", 4, Result = "AAAA" )]
-		[TestCase ( "test string", "\t", 3, Result = "test string\t\t\t" )]
-		[TestCase ( "test string", "\t", -13, Result = "test string\t" )]
-		[TestCase ( "test string", "\t", 1, Result = "test string\t" )]
-		[TestCase ( "test string", "\t", 0, Result = "test string" )]
-		[TestCase ( "test string", " this is my ", 1, Result = "test string this is my " )]
-		[TestCase ( "test string", " this is my ", 3, Result = "test string this is my  this is my  this is my " )]
+		[TestCase ( null, "A", 1, ExpectedResult = "A" )]
+		[TestCase ( "A", null, 1, ExpectedResult = "A" )]
+		[TestCase ( "A", null, 3, ExpectedResult = "A" )]
+		[TestCase ( "", "A", 1, ExpectedResult = "A" )]
+		[TestCase ( "", "A", 0, ExpectedResult = "" )]
+		[TestCase ( "", "A", 4, ExpectedResult = "AAAA" )]
+		[TestCase ( null, "A", 4, ExpectedResult = "AAAA" )]
+		[TestCase ( "test string", "\t", 3, ExpectedResult = "test string\t\t\t" )]
+		[TestCase ( "test string", "\t", -13, ExpectedResult = "test string\t" )]
+		[TestCase ( "test string", "\t", 1, ExpectedResult = "test string\t" )]
+		[TestCase ( "test string", "\t", 0, ExpectedResult = "test string" )]
+		[TestCase ( "test string", " this is my ", 1, ExpectedResult = "test string this is my " )]
+		[TestCase ( "test string", " this is my ", 3, ExpectedResult = "test string this is my  this is my  this is my " )]
 
 		public string AppendTests ( string s, string appendString, int reps )
 		{
@@ -513,28 +513,28 @@ namespace Aelena.SimpleExtensions.Tests
 		// ---------------------------------------------------------------------------------
 
 
-		[TestCase ( null, 0, false, Result = "" )]
-		[TestCase ( null, 0, true, Result = "" )]
-		[TestCase ( null, 3, false, Result = "" )]
-		[TestCase ( null, 3, true, Result = "" )]
-		[TestCase ( "", 0, false, Result = "" )]
-		[TestCase ( "", 0, true, Result = "" )]
-		[TestCase ( "", 2, false, Result = "" )]
-		[TestCase ( "", 2, true, Result = "" )]
-		[TestCase ( "abcd", 2, true, Result = "ab" )]
-		[TestCase ( "abcd", 2, false, Result = "ab" )]
-		[TestCase ( "abcd ", 2, true, Result = "ab" )]
-		[TestCase ( "abcd ", 2, false, Result = "abc" )]
-		[TestCase ( "abcd       ", 2, true, Result = "ab" )]
-		[TestCase ( "abcd    ", 2, false, Result = "abcd  " )]
-		[TestCase ( "abcd ", 12, true, Result = "" )]
-		[TestCase ( "abcd ", 12, false, Result = "" )]
-		[TestCase ( "abcd", 3, true, Result = "a" )]
-		[TestCase ( "abcd", 3, false, Result = "a" )]
-		[TestCase ( "abcd", 4, true, Result = "" )]
-		[TestCase ( "abcd", 4, false, Result = "" )]
-		[TestCase ( "abcd", 5, true, Result = "" )]
-		[TestCase ( "abcd", 5, false, Result = "" )]
+		[TestCase ( null, 0, false, ExpectedResult = "" )]
+		[TestCase ( null, 0, true, ExpectedResult = "" )]
+		[TestCase ( null, 3, false, ExpectedResult = "" )]
+		[TestCase ( null, 3, true, ExpectedResult = "" )]
+		[TestCase ( "", 0, false, ExpectedResult = "" )]
+		[TestCase ( "", 0, true, ExpectedResult = "" )]
+		[TestCase ( "", 2, false, ExpectedResult = "" )]
+		[TestCase ( "", 2, true, ExpectedResult = "" )]
+		[TestCase ( "abcd", 2, true, ExpectedResult = "ab" )]
+		[TestCase ( "abcd", 2, false, ExpectedResult = "ab" )]
+		[TestCase ( "abcd ", 2, true, ExpectedResult = "ab" )]
+		[TestCase ( "abcd ", 2, false, ExpectedResult = "abc" )]
+		[TestCase ( "abcd       ", 2, true, ExpectedResult = "ab" )]
+		[TestCase ( "abcd    ", 2, false, ExpectedResult = "abcd  " )]
+		[TestCase ( "abcd ", 12, true, ExpectedResult = "" )]
+		[TestCase ( "abcd ", 12, false, ExpectedResult = "" )]
+		[TestCase ( "abcd", 3, true, ExpectedResult = "a" )]
+		[TestCase ( "abcd", 3, false, ExpectedResult = "a" )]
+		[TestCase ( "abcd", 4, true, ExpectedResult = "" )]
+		[TestCase ( "abcd", 4, false, ExpectedResult = "" )]
+		[TestCase ( "abcd", 5, true, ExpectedResult = "" )]
+		[TestCase ( "abcd", 5, false, ExpectedResult = "" )]
 		public string ShouldRemoveFromEnd ( string value, int charCount, bool trimEndFirst )
 		{
 			return value.RemoveFromEnd ( charCount, trimEndFirst );
@@ -544,26 +544,26 @@ namespace Aelena.SimpleExtensions.Tests
 		// ---------------------------------------------------------------------------------
 
 
-		[TestCase ( null, "", true, Result = "" )]
-		[TestCase ( null, "", false, Result = "" )]
-		[TestCase ( "", "", true, Result = "" )]
-		[TestCase ( "", "", false, Result = "" )]
-		[TestCase ( "", "a", true, Result = "" )]
-		[TestCase ( "", "a", false, Result = "" )]
-		[TestCase ( "the quick brown fox jumps over the lazy dog", "fox", false, Result = " jumps over the lazy dog" )]
-		[TestCase ( "the quick brown fox jumps over the lazy dog", "fox", true, Result = "jumps over the lazy dog" )]
-		[TestCase ( "the quick brown fox jumps over the lazy dog", "fox ", true, Result = "jumps over the lazy dog" )]
-		[TestCase ( "the quick brown fox jumps over the lazy dog", "fox ", false, Result = "jumps over the lazy dog" )]
-		[TestCase ( "the quick brown fox jumps over the lazy dog", "dog", true, Result = "" )]
-		[TestCase ( "the quick brown fox jumps over the lazy dog", "dog", false, Result = "" )]
-		[TestCase ( "the quick brown fox jumps over the lazy dog", "bull ", false, Result = "the quick brown fox jumps over the lazy dog" )]
-		[TestCase ( "the quick brown fox jumps over the lazy dog", "bull ", true, Result = "the quick brown fox jumps over the lazy dog" )]
-		[TestCase ( " the quick brown fox jumps over the lazy dog", "bull ", false, Result = " the quick brown fox jumps over the lazy dog" )]
-		[TestCase ( " the quick brown fox jumps over the lazy dog", "bull ", true, Result = " the quick brown fox jumps over the lazy dog" )]
-		[TestCase ( "the quick brown fox jumps over the lazy brown dog", "the", false, Result = " quick brown fox jumps over the lazy brown dog" )]
-		[TestCase ( "the quick brown fox jumps over the lazy brown dog", "the", true, Result = "quick brown fox jumps over the lazy brown dog" )]
-		[TestCase ( "the quick brown fox jumps over the lazy brown dog", "the ", false, Result = "quick brown fox jumps over the lazy brown dog" )]
-		[TestCase ( "the quick brown fox jumps over the lazy brown dog", "the ", true, Result = "quick brown fox jumps over the lazy brown dog" )]
+		[TestCase ( null, "", true, ExpectedResult = "" )]
+		[TestCase ( null, "", false, ExpectedResult = "" )]
+		[TestCase ( "", "", true, ExpectedResult = "" )]
+		[TestCase ( "", "", false, ExpectedResult = "" )]
+		[TestCase ( "", "a", true, ExpectedResult = "" )]
+		[TestCase ( "", "a", false, ExpectedResult = "" )]
+		[TestCase ( "the quick brown fox jumps over the lazy dog", "fox", false, ExpectedResult = " jumps over the lazy dog" )]
+		[TestCase ( "the quick brown fox jumps over the lazy dog", "fox", true, ExpectedResult = "jumps over the lazy dog" )]
+		[TestCase ( "the quick brown fox jumps over the lazy dog", "fox ", true, ExpectedResult = "jumps over the lazy dog" )]
+		[TestCase ( "the quick brown fox jumps over the lazy dog", "fox ", false, ExpectedResult = "jumps over the lazy dog" )]
+		[TestCase ( "the quick brown fox jumps over the lazy dog", "dog", true, ExpectedResult = "" )]
+		[TestCase ( "the quick brown fox jumps over the lazy dog", "dog", false, ExpectedResult = "" )]
+		[TestCase ( "the quick brown fox jumps over the lazy dog", "bull ", false, ExpectedResult = "the quick brown fox jumps over the lazy dog" )]
+		[TestCase ( "the quick brown fox jumps over the lazy dog", "bull ", true, ExpectedResult = "the quick brown fox jumps over the lazy dog" )]
+		[TestCase ( " the quick brown fox jumps over the lazy dog", "bull ", false, ExpectedResult = " the quick brown fox jumps over the lazy dog" )]
+		[TestCase ( " the quick brown fox jumps over the lazy dog", "bull ", true, ExpectedResult = " the quick brown fox jumps over the lazy dog" )]
+		[TestCase ( "the quick brown fox jumps over the lazy brown dog", "the", false, ExpectedResult = " quick brown fox jumps over the lazy brown dog" )]
+		[TestCase ( "the quick brown fox jumps over the lazy brown dog", "the", true, ExpectedResult = "quick brown fox jumps over the lazy brown dog" )]
+		[TestCase ( "the quick brown fox jumps over the lazy brown dog", "the ", false, ExpectedResult = "quick brown fox jumps over the lazy brown dog" )]
+		[TestCase ( "the quick brown fox jumps over the lazy brown dog", "the ", true, ExpectedResult = "quick brown fox jumps over the lazy brown dog" )]
 		public string SubStringAfterTests ( string value, string marker, bool trimResults )
 		{
 
@@ -575,28 +575,28 @@ namespace Aelena.SimpleExtensions.Tests
 		// ---------------------------------------------------------------------------------
 
 
-		[TestCase ( null, "", true, Result = "" )]
-		[TestCase ( null, "", false, Result = "" )]
-		[TestCase ( "", "", true, Result = "" )]
-		[TestCase ( "", "", false, Result = "" )]
-		[TestCase ( "", "a", true, Result = "" )]
-		[TestCase ( "", "a", false, Result = "" )]
-		[TestCase ( "the quick brown fox jumps over the lazy dog", "fox", false, Result = " jumps over the lazy dog" )]
-		[TestCase ( "the quick brown fox jumps over the lazy dog", "fox", true, Result = "jumps over the lazy dog" )]
-		[TestCase ( "the quick brown fox jumps over the lazy dog", "fox ", true, Result = "jumps over the lazy dog" )]
-		[TestCase ( "the quick brown fox jumps over the lazy dog", "fox ", false, Result = "jumps over the lazy dog" )]
-		[TestCase ( "the quick brown fox jumps over the lazy dog", "dog", true, Result = "" )]
-		[TestCase ( "the quick brown fox jumps over the lazy dog", "dog", false, Result = "" )]
-		[TestCase ( "the quick brown fox jumps over the lazy dog", "bull ", false, Result = "the quick brown fox jumps over the lazy dog" )]
-		[TestCase ( "the quick brown fox jumps over the lazy dog", "bull ", true, Result = "the quick brown fox jumps over the lazy dog" )]
-		[TestCase ( " the quick brown fox jumps over the lazy dog", "bull ", false, Result = " the quick brown fox jumps over the lazy dog" )]
-		[TestCase ( " the quick brown fox jumps over the lazy dog", "bull ", true, Result = " the quick brown fox jumps over the lazy dog" )]
-		[TestCase ( "the quick brown fox jumps over the lazy brown dog", "brown", false, Result = " dog" )]
-		[TestCase ( "the quick brown fox jumps over the lazy brown dog", "brown", true, Result = "dog" )]
-		[TestCase ( "the quick brown fox jumps over the lazy brown dog", "the", false, Result = " lazy brown dog" )]
-		[TestCase ( "the quick brown fox jumps over the lazy brown dog", "the", true, Result = "lazy brown dog" )]
-		[TestCase ( "the quick brown fox jumps over the lazy brown dog", "the ", false, Result = "lazy brown dog" )]
-		[TestCase ( "the quick brown fox jumps over the lazy brown dog", "the ", true, Result = "lazy brown dog" )]
+		[TestCase ( null, "", true, ExpectedResult = "" )]
+        [TestCase ( null, "", false, ExpectedResult = "" )]
+        [TestCase ( "", "", true, ExpectedResult = "" )]
+        [TestCase ( "", "", false, ExpectedResult = "" )]
+        [TestCase ( "", "a", true, ExpectedResult = "" )]
+        [TestCase ( "", "a", false, ExpectedResult = "" )]
+		[TestCase ( "the quick brown fox jumps over the lazy dog", "fox", false, ExpectedResult = " jumps over the lazy dog" )]
+		[TestCase ( "the quick brown fox jumps over the lazy dog", "fox", true, ExpectedResult = "jumps over the lazy dog" )]
+		[TestCase ( "the quick brown fox jumps over the lazy dog", "fox ", true, ExpectedResult = "jumps over the lazy dog" )]
+		[TestCase ( "the quick brown fox jumps over the lazy dog", "fox ", false, ExpectedResult = "jumps over the lazy dog" )]
+		[TestCase ( "the quick brown fox jumps over the lazy dog", "dog", true, ExpectedResult = "" )]
+		[TestCase ( "the quick brown fox jumps over the lazy dog", "dog", false, ExpectedResult = "" )]
+		[TestCase ( "the quick brown fox jumps over the lazy dog", "bull ", false, ExpectedResult = "the quick brown fox jumps over the lazy dog" )]
+		[TestCase ( "the quick brown fox jumps over the lazy dog", "bull ", true, ExpectedResult = "the quick brown fox jumps over the lazy dog" )]
+		[TestCase ( " the quick brown fox jumps over the lazy dog", "bull ", false, ExpectedResult = " the quick brown fox jumps over the lazy dog" )]
+		[TestCase ( " the quick brown fox jumps over the lazy dog", "bull ", true, ExpectedResult = " the quick brown fox jumps over the lazy dog" )]
+		[TestCase ( "the quick brown fox jumps over the lazy brown dog", "brown", false, ExpectedResult = " dog" )]
+		[TestCase ( "the quick brown fox jumps over the lazy brown dog", "brown", true, ExpectedResult = "dog" )]
+		[TestCase ( "the quick brown fox jumps over the lazy brown dog", "the", false, ExpectedResult = " lazy brown dog" )]
+		[TestCase ( "the quick brown fox jumps over the lazy brown dog", "the", true, ExpectedResult = "lazy brown dog" )]
+		[TestCase ( "the quick brown fox jumps over the lazy brown dog", "the ", false, ExpectedResult = "lazy brown dog" )]
+		[TestCase ( "the quick brown fox jumps over the lazy brown dog", "the ", true, ExpectedResult = "lazy brown dog" )]
 		public string SubStringAfterLastTests ( string value, string marker, bool trimResults )
 		{
 
@@ -609,12 +609,12 @@ namespace Aelena.SimpleExtensions.Tests
 
 
 
-		[TestCase ( "{}", "{", "}", Result = "" )]
-		[TestCase ( "{amduscia}", "{", "}", Result = "amduscia" )]
-		[TestCase ( " a band like {amduscia}", "{", "}", Result = "amduscia" )]
-		[TestCase ( "the quick brown fox jumps over the lazy brown dog", "quick", "lazy", Result = " brown fox jumps over the " )]
-		[TestCase ( "{\"Country\":\"ES\"}", "{", "}", Result = "\"Country\":\"ES\"" )]
-		[TestCase ( " {\"Country\":\"ES\",\"Active\":true, \"Age\":30, \"Title\":\"No reason to fear this\" }", "{", "}", Result = "\"Country\":\"ES\",\"Active\":true, \"Age\":30, \"Title\":\"No reason to fear this\" " )]
+		[TestCase ( "{}", "{", "}", ExpectedResult = "" )]
+		[TestCase ( "{amduscia}", "{", "}", ExpectedResult = "amduscia" )]
+		[TestCase ( " a band like {amduscia}", "{", "}", ExpectedResult = "amduscia" )]
+		[TestCase ( "the quick brown fox jumps over the lazy brown dog", "quick", "lazy", ExpectedResult = " brown fox jumps over the " )]
+		[TestCase ( "{\"Country\":\"ES\"}", "{", "}", ExpectedResult = "\"Country\":\"ES\"" )]
+		[TestCase ( " {\"Country\":\"ES\",\"Active\":true, \"Age\":30, \"Title\":\"No reason to fear this\" }", "{", "}", ExpectedResult = "\"Country\":\"ES\",\"Active\":true, \"Age\":30, \"Title\":\"No reason to fear this\" " )]
 		public string TakeBetweenTests ( string original, string s1, string s2 )
 		{
 			return original.TakeBetween ( s1, s2 );
@@ -625,11 +625,11 @@ namespace Aelena.SimpleExtensions.Tests
 
 
 		[TestCase ( "this is the message \"the email is used generally for all the automatic communication with the supplier - e.g. payment advice\" that was said to me",
-			"\"", "\"", Result = "the email is used generally for all the automatic communication with the supplier - e.g. payment advice" )]
+			"\"", "\"", ExpectedResult = "the email is used generally for all the automatic communication with the supplier - e.g. payment advice" )]
 		[TestCase ( "this is the message \"the email is used generally for all the \"automatic\" communication with the supplier - e.g. payment advice\" that was said to me",
-			 "\"", "\"", Result = "the email is used generally for all the \"automatic\" communication with the supplier - e.g. payment advice" )]
+			 "\"", "\"", ExpectedResult = "the email is used generally for all the \"automatic\" communication with the supplier - e.g. payment advice" )]
 		[TestCase ( "and then, what about this text with no coincidences?",
-			"\"", "\"", Result = "" )]
+			"\"", "\"", ExpectedResult = "" )]
 		public string TakeBetweenTests2 ( string original, string s1, string s2 )
 		{
 			return original.TakeBetween ( s1, s2 );
@@ -640,25 +640,25 @@ namespace Aelena.SimpleExtensions.Tests
 
 
 
-		[TestCase ( "{'P', 'Q'}", " ", "{", "}", Result = "{'P','Q'}" )]
-		[TestCase ( "{'P',     'Q'}", " ", "{", "}", Result = "{'P','Q'}" )]
-		[TestCase ( "{'P', 'Q', '2', 'birds'}", " ", "{", "}", Result = "{'P','Q','2','birds'}" )]
-		[TestCase ( "{'P',   'Q', '2',    'birds'}", " ", "{", "}", Result = "{'P','Q','2','birds'}" )]
+		[TestCase ( "{'P', 'Q'}", " ", "{", "}", ExpectedResult = "{'P','Q'}" )]
+		[TestCase ( "{'P',     'Q'}", " ", "{", "}", ExpectedResult = "{'P','Q'}" )]
+		[TestCase ( "{'P', 'Q', '2', 'birds'}", " ", "{", "}", ExpectedResult = "{'P','Q','2','birds'}" )]
+		[TestCase ( "{'P',   'Q', '2',    'birds'}", " ", "{", "}", ExpectedResult = "{'P','Q','2','birds'}" )]
 
-		[TestCase ( "hello boys and girls {'P', 'Q'} what was that?", " ", "{", "}", Result = "hello boys and girls {'P','Q'} what was that?" )]
-		[TestCase ( "hello boys and girls {'P',     'Q'} what was that?", " ", "{", "}", Result = "hello boys and girls {'P','Q'} what was that?" )]
-		[TestCase ( "hello boys and girls {'P', 'Q', '2', 'birds'} what was that?", " ", "{", "}", Result = "hello boys and girls {'P','Q','2','birds'} what was that?" )]
-		[TestCase ( "hello boys and girls {'P',   'Q', '2',    'birds'} what was that?", " ", "{", "}", Result = "hello boys and girls {'P','Q','2','birds'} what was that?" )]
+		[TestCase ( "hello boys and girls {'P', 'Q'} what was that?", " ", "{", "}", ExpectedResult = "hello boys and girls {'P','Q'} what was that?" )]
+		[TestCase ( "hello boys and girls {'P',     'Q'} what was that?", " ", "{", "}", ExpectedResult = "hello boys and girls {'P','Q'} what was that?" )]
+		[TestCase ( "hello boys and girls {'P', 'Q', '2', 'birds'} what was that?", " ", "{", "}", ExpectedResult = "hello boys and girls {'P','Q','2','birds'} what was that?" )]
+		[TestCase ( "hello boys and girls {'P',   'Q', '2',    'birds'} what was that?", " ", "{", "}", ExpectedResult = "hello boys and girls {'P','Q','2','birds'} what was that?" )]
 
-		[TestCase ( "dog{'P', 'Q'}god", " ", "dog{", "}god", Result = "dog{'P','Q'}god" )]
-		[TestCase ( "dog{'P',     'Q'}god", " ", "dog{", "}god", Result = "dog{'P','Q'}god" )]
-		[TestCase ( "dog{'P', 'Q', '2', 'birds'}god", " ", "dog{", "}god", Result = "dog{'P','Q','2','birds'}god" )]
-		[TestCase ( "dog{'P',   'Q', '2',    'birds'}god", " ", "dog{", "}god", Result = "dog{'P','Q','2','birds'}god" )]
+		[TestCase ( "dog{'P', 'Q'}god", " ", "dog{", "}god", ExpectedResult = "dog{'P','Q'}god" )]
+		[TestCase ( "dog{'P',     'Q'}god", " ", "dog{", "}god", ExpectedResult = "dog{'P','Q'}god" )]
+		[TestCase ( "dog{'P', 'Q', '2', 'birds'}god", " ", "dog{", "}god", ExpectedResult = "dog{'P','Q','2','birds'}god" )]
+		[TestCase ( "dog{'P',   'Q', '2',    'birds'}god", " ", "dog{", "}god", ExpectedResult = "dog{'P','Q','2','birds'}god" )]
 
-		[TestCase ( "random stirng before dog{'P', 'Q'}god", " ", "dog{", "}god", Result = "random stirng before dog{'P','Q'}god" )]
-		[TestCase ( "random stirng before dog{'P',     'Q'}god", " ", "dog{", "}god", Result = "random stirng before dog{'P','Q'}god" )]
-		[TestCase ( "random stirng before dog{'P', 'Q', '2', 'birds'}god", " ", "dog{", "}god", Result = "random stirng before dog{'P','Q','2','birds'}god" )]
-		[TestCase ( "random stirng before dog{'P',   'Q', '2',    'birds'}god", " ", "dog{", "}god", Result = "random stirng before dog{'P','Q','2','birds'}god" )]
+		[TestCase ( "random stirng before dog{'P', 'Q'}god", " ", "dog{", "}god", ExpectedResult = "random stirng before dog{'P','Q'}god" )]
+		[TestCase ( "random stirng before dog{'P',     'Q'}god", " ", "dog{", "}god", ExpectedResult = "random stirng before dog{'P','Q'}god" )]
+		[TestCase ( "random stirng before dog{'P', 'Q', '2', 'birds'}god", " ", "dog{", "}god", ExpectedResult = "random stirng before dog{'P','Q','2','birds'}god" )]
+		[TestCase ( "random stirng before dog{'P',   'Q', '2',    'birds'}god", " ", "dog{", "}god", ExpectedResult = "random stirng before dog{'P','Q','2','birds'}god" )]
 
 		public string RemoveBetweenTests ( string original, string removee, string s1, string s2 )
 		{
@@ -668,10 +668,10 @@ namespace Aelena.SimpleExtensions.Tests
 		// ---------------------------------------------------------------------------------
 
 
-		[TestCase ( "{'P', 'Q'}", " ", "{", "}", Result = "{'P','Q'}" )]
-		[TestCase ( "{'P',  'Q'}", " ", "{", "}", Result = "{'P','Q'}" )]
-		[TestCase ( "{'P',          'Q', '2', 'birds'}", " ", "{", "}", Result = "{'P','Q','2','birds'}" )]
-		[TestCase ( "{'P',      'Q',     '2',    'birds'}", " ", "{", "}", Result = "{'P','Q','2','birds'}" )]
+		[TestCase ( "{'P', 'Q'}", " ", "{", "}", ExpectedResult = "{'P','Q'}" )]
+		[TestCase ( "{'P',  'Q'}", " ", "{", "}", ExpectedResult = "{'P','Q'}" )]
+		[TestCase ( "{'P',          'Q', '2', 'birds'}", " ", "{", "}", ExpectedResult = "{'P','Q','2','birds'}" )]
+		[TestCase ( "{'P',      'Q',     '2',    'birds'}", " ", "{", "}", ExpectedResult = "{'P','Q','2','birds'}" )]
 		public string RemoveBetweenTests2 ( string original, string removee, string s1, string s2 )
 		{
 			return original.RemoveBetween ( new List<String> { " ", "\t" }, s1, s2 );
@@ -681,10 +681,10 @@ namespace Aelena.SimpleExtensions.Tests
 		// ---------------------------------------------------------------------------------
 
 
-		[TestCase ( "{'P', - 'Q'}", " ", "{", "}", Result = "{'P','Q'}" )]
-		[TestCase ( "{'P',   -- 'Q'}", " ", "{", "}", Result = "{'P','Q'}" )]
-		[TestCase ( "{'P',      -  -    -   'Q', '2', 'birds'}", " ", "{", "}", Result = "{'P','Q','2','birds'}" )]
-		[TestCase ( "{'P',  - - #    'Q',     '2',    'birds'}", " ", "{", "}", Result = "{'P','Q','2','birds'}" )]
+		[TestCase ( "{'P', - 'Q'}", " ", "{", "}", ExpectedResult = "{'P','Q'}" )]
+		[TestCase ( "{'P',   -- 'Q'}", " ", "{", "}", ExpectedResult = "{'P','Q'}" )]
+		[TestCase ( "{'P',      -  -    -   'Q', '2', 'birds'}", " ", "{", "}", ExpectedResult = "{'P','Q','2','birds'}" )]
+		[TestCase ( "{'P',  - - #    'Q',     '2',    'birds'}", " ", "{", "}", ExpectedResult = "{'P','Q','2','birds'}" )]
 		public string RemoveBetweenTests3 ( string original, string removee, string s1, string s2 )
 		{
 			return original.RemoveBetween ( new List<String> { " ", "\t", "-", "#" }, s1, s2 );
@@ -694,23 +694,23 @@ namespace Aelena.SimpleExtensions.Tests
 		// ---------------------------------------------------------------------------------
 
 
-		[TestCase ( null, " ", "{", "}", Result = "{'P','Q'}", ExpectedException = typeof ( ArgumentException ), ExpectedMessage = "String cannot be null" )]
-		[TestCase ( "}'P',   -- 'Q'{", " ", "{", "}", Result = "{'P','Q'}", ExpectedException = typeof ( Exception ), ExpectedMessage = "End string cannot appear earlier than beginning string" )]
-		public string RemoveBetweenTestsExceptions ( string original, string removee, string s1, string s2 )
-		{
-			return original.RemoveBetween ( new List<String> { " ", "\t", "-", "#" }, s1, s2 );
-		}
+        //[TestCase ( null, " ", "{", "}", ExpectedResult = "{'P','Q'}", ExpectedException = typeof ( ArgumentException ), ExpectedMessage = "String cannot be null" )]
+        //[TestCase ( "}'P',   -- 'Q'{", " ", "{", "}", ExpectedResult = "{'P','Q'}", ExpectedException = typeof ( Exception ), ExpectedMessage = "End string cannot appear earlier than beginning string" )]
+        //public string RemoveBetweenTestsExceptions ( string original, string removee, string s1, string s2 )
+        //{
+        //    return original.RemoveBetween ( new List<String> { " ", "\t", "-", "#" }, s1, s2 );
+        //}
 
 
 		// ---------------------------------------------------------------------------------
 
 
 		// this one should not change as island is not contained as a word inside the subject sentence
-		[TestCase ( "the islanders were insane", "island", "villag", Result = "the islanders were insane" )]
-		[TestCase ( "the islanders were insane", "island", "", Result = "the islanders were insane" )]
-		[TestCase ( "the islands were quite beautiful in the summer", "islands", "villages", Result = "the villages were quite beautiful in the summer" )]
+		[TestCase ( "the islanders were insane", "island", "villag", ExpectedResult = "the islanders were insane" )]
+		[TestCase ( "the islanders were insane", "island", "", ExpectedResult = "the islanders were insane" )]
+		[TestCase ( "the islands were quite beautiful in the summer", "islands", "villages", ExpectedResult = "the villages were quite beautiful in the summer" )]
 		[TestCase ( "some islands were quite beautiful in summer, other islands were better in winter", "islands", "villages",
-			Result = "some villages were quite beautiful in summer, other villages were better in winter" )]
+			ExpectedResult = "some villages were quite beautiful in summer, other villages were better in winter" )]
 		public string ReplaceWordTests ( string teststring, string newstring, string oldstring )
 		{
 			return teststring.ReplaceWord ( newstring, oldstring );
@@ -720,7 +720,7 @@ namespace Aelena.SimpleExtensions.Tests
 		// ---------------------------------------------------------------------------------
 
 
-		[TestCase ( "let sleeping dogs lie", Result = "t sping dogs i" )]
+		[TestCase ( "let sleeping dogs lie", ExpectedResult = "t sping dogs i" )]
 		public string ImprovedRemoveTests_1 ( string line )
 		{
 			return line.MultipleRemove ( new List<string> () { "l", "e" } );
@@ -729,7 +729,7 @@ namespace Aelena.SimpleExtensions.Tests
 		// ---------------------------------------------------------------------------------
 
 
-		[TestCase ( "'All the things she did' was a track performed by \"The Whatevers\"", Result = "All the things she did was a track performed by The Whatevers" )]
+		[TestCase ( "'All the things she did' was a track performed by \"The Whatevers\"", ExpectedResult = "All the things she did was a track performed by The Whatevers" )]
 		public string ImprovedRemoveTests_2 ( string line )
 		{
 			return line.MultipleRemove ( new List<string> () { "\"", "'" } );
@@ -738,7 +738,7 @@ namespace Aelena.SimpleExtensions.Tests
 
 		// ---------------------------------------------------------------------------------
 
-		[TestCase ( "It's raining cats and dogs", Result = "It's raining  and " )]
+		[TestCase ( "It's raining cats and dogs", ExpectedResult = "It's raining  and " )]
 		public string ImprovedRemoveTests_3 ( string line )
 		{
 			return line.MultipleRemove ( new List<string> () { "cats", "dogs" } );
@@ -746,13 +746,13 @@ namespace Aelena.SimpleExtensions.Tests
 
 		// ---------------------------------------------------------------------------------
 
-		[TestCase ( "let sleeping dogs lie", "l", "", Result = "et sleeping dogs lie" )]
-		[TestCase ( "let sleeping dogs lie", "t", "", Result = "le sleeping dogs lie" )]
-		[TestCase ( "let sleeping dogs lie", "p", "", Result = "let sleeing dogs lie" )]
+		[TestCase ( "let sleeping dogs lie", "l", "", ExpectedResult = "et sleeping dogs lie" )]
+		[TestCase ( "let sleeping dogs lie", "t", "", ExpectedResult = "le sleeping dogs lie" )]
+		[TestCase ( "let sleeping dogs lie", "p", "", ExpectedResult = "let sleeing dogs lie" )]
 
-		[TestCase ( "let sleeping dogs lie", "l", "@", Result = "@et sleeping dogs lie" )]
-		[TestCase ( "let sleeping dogs lie", "t", "KUZ", Result = "leKUZ sleeping dogs lie" )]
-		[TestCase ( "let sleeping dogs lie", "p", "1234567890", Result = "let slee1234567890ing dogs lie" )]
+		[TestCase ( "let sleeping dogs lie", "l", "@", ExpectedResult = "@et sleeping dogs lie" )]
+		[TestCase ( "let sleeping dogs lie", "t", "KUZ", ExpectedResult = "leKUZ sleeping dogs lie" )]
+		[TestCase ( "let sleeping dogs lie", "p", "1234567890", ExpectedResult = "let slee1234567890ing dogs lie" )]
 		public string ReplaceFirstTests ( string line, string ocurrence, string replacement )
 		{
 			if ( String.IsNullOrEmpty ( replacement ) )
@@ -764,14 +764,14 @@ namespace Aelena.SimpleExtensions.Tests
 		// ---------------------------------------------------------------------------------
 
 
-		[TestCase ( "let sleeping dogs lie", "l", "", Result = "let sleeping dogs ie" )]
-		[TestCase ( "let sleeping dogs lie", "t", "", Result = "le sleeping dogs lie" )]
-		[TestCase ( "let sleeping dogs lie", "i", "", Result = "let sleeping dogs le" )]
+		[TestCase ( "let sleeping dogs lie", "l", "", ExpectedResult = "let sleeping dogs ie" )]
+		[TestCase ( "let sleeping dogs lie", "t", "", ExpectedResult = "le sleeping dogs lie" )]
+		[TestCase ( "let sleeping dogs lie", "i", "", ExpectedResult = "let sleeping dogs le" )]
 
-		[TestCase ( "let sleeping dogs lie", "l", "@", Result = "let sleeping dogs @ie" )]
-		[TestCase ( "let sleeping dogs lie", "t", "KUZ", Result = "leKUZ sleeping dogs lie" )]
-		[TestCase ( "let sleeping dogs lie", "g", "KUZ", Result = "let sleeping doKUZs lie" )]
-		[TestCase ( "let sleeping dogs lie", "e", "1234567890", Result = "let sleeping dogs li1234567890" )]
+		[TestCase ( "let sleeping dogs lie", "l", "@", ExpectedResult = "let sleeping dogs @ie" )]
+		[TestCase ( "let sleeping dogs lie", "t", "KUZ", ExpectedResult = "leKUZ sleeping dogs lie" )]
+		[TestCase ( "let sleeping dogs lie", "g", "KUZ", ExpectedResult = "let sleeping doKUZs lie" )]
+		[TestCase ( "let sleeping dogs lie", "e", "1234567890", ExpectedResult = "let sleeping dogs li1234567890" )]
 		public string ReplaceLastTests ( string line, string occurrence, string replacement )
 		{
 			if ( String.IsNullOrEmpty ( replacement ) )
@@ -782,12 +782,12 @@ namespace Aelena.SimpleExtensions.Tests
 		// ---------------------------------------------------------------------------------
 
 
-		[TestCase ( "let sleeping dogs lie", "l", "", Result = "et sleeping dogs ie" )]
-		[TestCase ( "let sleeping dogs lie", "l", "a588", Result = "a588et sleeping dogs a588ie" )]
+		[TestCase ( "let sleeping dogs lie", "l", "", ExpectedResult = "et sleeping dogs ie" )]
+		[TestCase ( "let sleeping dogs lie", "l", "a588", ExpectedResult = "a588et sleeping dogs a588ie" )]
 		[TestCase ( "She said several things, like \"yeah\", \"like\" and \"whatever\", I did not like her speech", "\"", "",
-			Result = "She said several things, like yeah\", \"like\" and \"whatever, I did not like her speech" )]
-		[TestCase ( "She said \"yeah\"", "\"", "", Result = "She said yeah" )]
-		[TestCase ( "\"yeah, she said", "\"", "", Result = "yeah, she said" )]
+			ExpectedResult = "She said several things, like yeah\", \"like\" and \"whatever, I did not like her speech" )]
+		[TestCase ( "She said \"yeah\"", "\"", "", ExpectedResult = "She said yeah" )]
+		[TestCase ( "\"yeah, she said", "\"", "", ExpectedResult = "yeah, she said" )]
 		public string ReplaceFirstAndLastOnlyTests ( string line, string occurrence, string replacement )
 		{
 			if ( String.IsNullOrEmpty ( replacement ) )
@@ -1027,19 +1027,19 @@ namespace Aelena.SimpleExtensions.Tests
 		// ---------------------------------------------------------------------------------
 
 
-		[TestCase ( "a", "", Result = "a" )]
-		[TestCase ( "", "", Result = "" )]
-		[TestCase ( "", " ", Result = "" )]
-		[TestCase ( "", " - ", Result = "" )]
-		[TestCase ( "yeah!", "", Result = "yeah!" )]
-		[TestCase ( "yeah!", "!", Result = "yeah" )]
-		[TestCase ( "yeah!!", "!", Result = "yeah!" )]
-		[TestCase ( "yeah!!", "!!", Result = "yeah" )]
-		[TestCase ( "yeah!!", "!!!", Result = "yeah!!" )]
-		[TestCase ( "a", " ", Result = "a" )]
-		[TestCase ( "a ", " ", Result = "a" )]
-		[TestCase ( "a  ", " ", Result = "a " )]
-		[TestCase ( "a  ", "  ", Result = "a" )]
+		[TestCase ( "a", "", ExpectedResult = "a" )]
+		[TestCase ( "", "", ExpectedResult = "" )]
+		[TestCase ( "", " ", ExpectedResult = "" )]
+		[TestCase ( "", " - ", ExpectedResult = "" )]
+		[TestCase ( "yeah!", "", ExpectedResult = "yeah!" )]
+		[TestCase ( "yeah!", "!", ExpectedResult = "yeah" )]
+		[TestCase ( "yeah!!", "!", ExpectedResult = "yeah!" )]
+		[TestCase ( "yeah!!", "!!", ExpectedResult = "yeah" )]
+		[TestCase ( "yeah!!", "!!!", ExpectedResult = "yeah!!" )]
+		[TestCase ( "a", " ", ExpectedResult = "a" )]
+		[TestCase ( "a ", " ", ExpectedResult = "a" )]
+		[TestCase ( "a  ", " ", ExpectedResult = "a " )]
+		[TestCase ( "a  ", "  ", ExpectedResult = "a" )]
 		public string RemoveLast ( string sut, string removee )
 		{
 			return sut.RemoveLast ( removee );
@@ -1117,7 +1117,7 @@ namespace Aelena.SimpleExtensions.Tests
 		// ---------------------------------------------------------------------------------
 
 
-		[TestCase ( "àëíôüñ", Result = "aeioun" )]
+		[TestCase ( "àëíôüñ", ExpectedResult = "aeioun" )]
 		public string RemoveDiacritics_Tests ( string sut )
 		{
 			return sut.RemoveDiacritics ();
