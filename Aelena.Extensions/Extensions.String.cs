@@ -696,7 +696,7 @@ namespace Aelena.SimpleExtensions.StringExtensions
 			var i = subject.IndexOf ( occurrenceToRemove );
 
 			if ( i >= 0 )
-				return string.Format ( "{0}{1}{2}", subject.Take ( i ), replacement, subject.Skip ( i + occurrenceToRemove.Length ) );
+				return string.Format ( "{0}{1}{2}", subject.Truncate ( i ), replacement, subject.TakeFrom ( i + occurrenceToRemove.Length ) );
 			return subject;
 
 		}
@@ -725,7 +725,7 @@ namespace Aelena.SimpleExtensions.StringExtensions
 
 			var i = subject.LastIndexOf ( occurrenceToRemove );
 			if ( i >= 0 )
-				return string.Format ( "{0}{1}{2}", subject.Take ( i ), replacement, subject.Skip ( i + occurrenceToRemove.Length ) );
+                return string.Format ( "{0}{1}{2}", subject.Truncate ( i ), replacement, subject.TakeFrom ( i + occurrenceToRemove.Length ) );
 			return subject;
 
 		}
@@ -781,7 +781,7 @@ namespace Aelena.SimpleExtensions.StringExtensions
 
 			var i = subject.LastIndexOf ( removee );
 			if ( i >= 0 )
-				return string.Format ( "{0}{1}{2}", subject.Take ( i ), "", subject.Skip ( i + removee.Length ) );
+				return string.Format ( "{0}{1}{2}", subject.Truncate ( i ), "", subject.TakeFrom ( i + removee.Length ) );
 			return subject;
 		}
 
@@ -925,6 +925,50 @@ namespace Aelena.SimpleExtensions.StringExtensions
 
 		// ---------------------------------------------------------------------------------
 
+
+        /// <summary>
+        /// Truncates a string to a maximum length.
+        /// </summary>
+        /// <param name="value">The string to truncate.</param>
+        /// <param name="length">The maximum length of the returned string.</param>
+        /// <returns>The input string, truncated to <paramref name="length"/> characters.</returns>
+        public static string Truncate ( this string value, int length )
+        {
+            if ( value == null )
+                throw new ArgumentNullException ( "value" );
+            return value.Length <= length ? value : value.Substring ( 0, length );
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
+
+        /// <summary>
+        /// Truncates a string to a maximum length.
+        /// </summary>
+        /// <param name="value">The string to truncate.</param>
+        /// <param name="length">The maximum length of the returned string.</param>
+        /// <returns>The input string, truncated to <paramref name="length"/> characters.</returns>
+        public static string TakeFrom ( this string value, int position )
+        {
+            if ( value == null )
+                throw new ArgumentNullException ( "value" );
+            return position > value.Length ? value : value.Substring ( position );
+        }
+
+        
+        // ---------------------------------------------------------------------------------
+
+
+        public static string FromCharListToString ( this IEnumerable<char> source )
+        {
+            if ( source == null )
+                throw new ArgumentNullException ( "source" );
+            return new string ( source.ToArray () );
+        }
+
+
+        // ---------------------------------------------------------------------------------
 
 	}
 }
