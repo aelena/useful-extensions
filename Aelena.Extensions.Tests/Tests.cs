@@ -1214,6 +1214,40 @@ namespace Aelena.SimpleExtensions.Tests
 
 
 
+        [Fact]
+        public void AreAllNull_Test04 ()
+        {
+            var sut = new DummyPerson2 ();   // has all null fields where null is the default for the type
+            Assert.True ( sut.AreAllNull ( new [ ] { "Name", "Occupation" } ) );
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
+
+        [Fact]
+        public void AreAllNull_Test05 ()
+        {
+            var sut = new DummyPerson2 ();
+            sut.Name = "Jonus";
+            Assert.True ( sut.AreAllNull ( new [ ] { "Occupation" } ) );
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
+
+        [Fact]
+        public void AreAllNull_Test06 ()
+        {
+            var sut = new DummyPerson2 ();
+            sut.Age = 23;
+            Assert.True ( sut.AreAllNull ( new [ ] { "Name" } ) );
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
     }
 
 
@@ -1231,6 +1265,19 @@ namespace Aelena.SimpleExtensions.Tests
         public override string ToString ()
         {
             return String.Format ( "{0}, {1}", Name, Age );
+        }
+
+    }
+
+    public class DummyPerson2
+    {
+        public string Name { get; set; }
+        public Nullable<int> Age { get; set; }
+        public string Occupation { get; set; }
+
+        public override string ToString ()
+        {
+            return String.Format ( "{0}, {1}", Name, Age.Value );
         }
 
     }
