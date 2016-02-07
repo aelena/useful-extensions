@@ -493,6 +493,16 @@ namespace Aelena.SimpleExtensions.StringExtensions
 		// ---------------------------------------------------------------------------------
 
 
+        /// <summary>
+        /// Returns all substrings found between successive instances of the two marker strings.
+        /// </summary>
+        /// <param name="value">String instance to be searched.</param>
+        /// <param name="beginningString">String marking the beginning of the search.</param>
+        /// <param name="endString">String marking the end of the search.</param>
+        /// <returns>The substring contained between the two markers, if found, or empty string
+        /// otherwise.</returns>
+        /// <exception cref="ArgumentNullException"/>
+        /// <exception cref="Exception" />
         public static IEnumerable<string> TakeBetweenMultiple ( this string value, string beginningString, string endString, bool trimResults = false )
         {
             var _results = new List<string> ();
