@@ -493,6 +493,23 @@ namespace Aelena.SimpleExtensions.StringExtensions
 		// ---------------------------------------------------------------------------------
 
 
+        public static IEnumerable<string> TakeBetweenMultiple ( this string value, string beginningString, string endString, bool trimResults = false )
+        {
+            var _results = new List<string> ();
+
+            string @string = "";
+            while ( !String.IsNullOrEmpty (value) && !String.IsNullOrEmpty ( @string = value.TakeBetween ( beginningString, endString, trimResults ) ) )
+            {
+                // now, make original string shorter, by removing found part
+                value = value.SubStringAfter ( endString );
+                _results.Add ( @string );
+            }
+
+            return _results;
+        }
+
+        // ---------------------------------------------------------------------------------
+
 
 		/// <summary>
 		/// Removes all ocurrences of a string in the interval denoted by the 

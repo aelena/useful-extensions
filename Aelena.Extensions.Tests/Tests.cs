@@ -627,6 +627,27 @@ namespace Aelena.SimpleExtensions.Tests
 
 
         [Theory]
+        [InlineData ( "{}", "{", "}", 0, "", "" )]
+        [InlineData ( "{amduscia}", "{", "}", 1, "amduscia", "amduscia" )]
+        [InlineData ( "the quick brown fox jumps over the lazy brown dog", "quick", "lazy", 1, "brown fox jumps over the", "brown fox jumps over the" )]
+        [InlineData ( "IF no one cares THEN who really cares?", "IF", "THEN", 1, "no one cares", "no one cares" )]
+        [InlineData ( "IF no one cares THEN who really cares? IF only you care THEN no one really cares", "IF", "THEN", 2, "no one cares", "only you care" )]
+        public void TakeBetweenMultipleTests ( string original, string s1, string s2, int expectedCount, string first, string last )
+        {
+            var results = original.TakeBetweenMultiple ( s1, s2, true );
+            Assert.True ( results.Count () == expectedCount );
+            if ( expectedCount > 0 )
+            {
+                Assert.True ( results.First ().Equals ( first ) );
+                Assert.True ( results.Last ().Equals ( last ) );
+            }
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
+
+        [Theory]
         [InlineData ( "this is the message \"the email is used generally for all the automatic communication with the supplier - e.g. payment advice\" that was said to me",
             "\"", "\"", "the email is used generally for all the automatic communication with the supplier - e.g. payment advice" )]
         [InlineData ( "this is the message \"the email is used generally for all the \"automatic\" communication with the supplier - e.g. payment advice\" that was said to me",
