@@ -997,6 +997,179 @@ namespace Aelena.SimpleExtensions.StringExtensions
 
         // ---------------------------------------------------------------------------------
 
+
+        public static IEnumerable<string> Split2 ( this string s,
+                                               IEnumerable<string> separators,
+                                                IEnumerable<Tuple<string, string>> excludingPairs,
+                                                StringSplitOptions options = StringSplitOptions.None,
+                                                bool trimElements = false )
+        {
+
+            if ( String.IsNullOrEmpty ( s ) )
+                return new List<string> ();
+
+            if ( !separators.HasElements () )
+                throw new ArgumentNullException ( "separators", "The list must contain at least one element" );
+
+
+            var excludedStrings = new List<string> ();
+            foreach ( var t in excludingPairs )
+                excludedStrings.AddRange ( s.FindAllBetween ( t.Item1, t.Item2, true ) );
+
+
+            // InBetweenAny
+            var excludedIntervals = new List<List<int>> ();
+            foreach ( var ex in excludedStrings )
+            {
+                excludedIntervals.Add ( new List<int> () { s.IndexOf ( ex ), ex.Length + s.IndexOf ( ex ) } );
+            }
+
+            // get indices of all separators
+            var __sepIndices = s.IndicesOfAll2 ( separators );
+            var __splittedList = new List<string> ();
+            var __offset = 0;
+            IEnumerable<int> __chosenInterval = new List<int> ();
+            bool __controlFlag = false;
+            foreach ( var i in __sepIndices )
+            {
+                if ( i.Key.InBetweenAny ( excludedIntervals, out __chosenInterval ) )
+                {
+                    if ( !__controlFlag )
+                    {
+                        __splittedList.Add ( s.Substring ( __chosenInterval.Min (), __chosenInterval.Max () - __chosenInterval.Min () ) );
+                        __offset = __chosenInterval.Max ();
+                        __controlFlag = true;
+                    }
+                }
+                else
+                {
+                    __controlFlag = false;
+                    if ( !trimElements )
+                        __splittedList.Add ( s.Substring ( __offset, i.Key - __offset ) );
+                    else
+                        __splittedList.Add ( s.Substring ( __offset, i.Key - __offset ).Trim () );
+                    __offset = i.Key + i.Value.Length;
+                }
+            }
+
+            // after last separator, add the string's remainder
+            __splittedList.Add ( s.Substring ( __offset ) );
+
+            if ( options == StringSplitOptions.RemoveEmptyEntries )
+                __splittedList.RemoveAll ( x => x.Trim () == String.Empty );
+
+            return __splittedList;
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
+
+        public static IEnumerable<string> Split2 ( this string s,
+                                               IEnumerable<string> separators,
+                                                string excludeBeginningString,
+                                                string excludeEndString,
+                                                StringSplitOptions options = StringSplitOptions.None,
+                                                bool trimElements = false )
+        {
+
+            if ( String.IsNullOrEmpty ( s ) )
+                return null;
+
+            if ( !separators.HasElements () )
+                throw new ArgumentNullException ( "separators", "The list must contain at least one element" );
+
+            var excludedStrings = s.FindAllBetween ( excludeBeginningString, excludeEndString, true );
+            // InBetweenAny
+            var excludedIntervals = new List<List<int>> ();
+            foreach ( var ex in excludedStrings )
+            {
+                excludedIntervals.Add ( new List<int> () { s.IndexOf ( ex ), ex.Length + s.IndexOf ( ex ) } );
+            }
+
+            // get indices of all separators
+            var __sepIndices = s.IndicesOfAll2 ( separators );
+            var __splittedList = new List<string> ();
+            var __offset = 0;
+            IEnumerable<int> __chosenInterval = new List<int> ();
+            bool __controlFlag = false;
+            foreach ( var i in __sepIndices )
+            {
+                if ( i.Key.InBetweenAny ( excludedIntervals, out __chosenInterval ) )
+                {
+                    if ( !__controlFlag )
+                    {
+                        __splittedList.Add ( s.Substring ( __chosenInterval.Min (), __chosenInterval.Max () - __chosenInterval.Min () ) );
+                        __offset = __chosenInterval.Max ();
+                        __controlFlag = true;
+                    }
+                }
+                else
+                {
+                    __controlFlag = false;
+                    if ( !trimElements )
+                        __splittedList.Add ( s.Substring ( __offset, i.Key - __offset ) );
+                    else
+                        __splittedList.Add ( s.Substring ( __offset, i.Key - __offset ).Trim () );
+                    __offset = i.Key + i.Value.Length;
+                }
+            }
+
+            // after last separator, add the string's remainder
+            __splittedList.Add ( s.Substring ( __offset ) );
+
+            if ( options == StringSplitOptions.RemoveEmptyEntries )
+                __splittedList.RemoveAll ( x => x == String.Empty );
+
+            return __splittedList;
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
+
+        public static IEnumerable<string> Split2 ( this string s,
+                                               IEnumerable<string> separators,
+                                                StringSplitOptions options = StringSplitOptions.None,
+                                                bool trimElements = false )
+        {
+
+            if ( String.IsNullOrEmpty ( s ) )
+                return null;
+
+            if ( !separators.HasElements () )
+                throw new ArgumentNullException ( "separators", "The list must contain at least one element" );
+
+            // get indices of all separators
+            var __sepIndices = s.IndicesOfAll2 ( separators );
+            var __splittedList = new List<string> ();
+            var __offset = 0;
+            foreach ( var i in __sepIndices )
+            {
+                if ( !trimElements )
+                    __splittedList.Add ( s.Substring ( __offset, i.Key - __offset ) );
+                else
+                    __splittedList.Add ( s.Substring ( __offset, i.Key - __offset ).Trim () );
+
+                __offset = i.Key + i.Value.Length;
+            }
+
+            // after last separator, add the string's remainder
+            __splittedList.Add ( s.Substring ( __offset ) );
+
+            if ( options == StringSplitOptions.RemoveEmptyEntries )
+                __splittedList.RemoveAll ( x => x == String.Empty );
+
+            return __splittedList;
+        }
+
+
+        // ---------------------------------------------------------------------------------
+
+
+        // ---------------------------------------------------------------------------------
+
+
 	}
 }
 
