@@ -8,10 +8,12 @@
     <IsPackable>true</IsPackable>
     <!-- The nuget.org package keeps the historical id; assembly and namespace are Aelena.CommonExtensions. -->
     <PackageId>Common-Extensions</PackageId>
-    <Version>2.0.1</Version>
+    <Version>2.0.2</Version>
     <Description>A small, opinionated set of extension methods that fill real gaps in the .NET BCL for strings, sequences and comparable values.</Description>
     <PackageTags>extensions;string;linq;enumerable;utility</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Copyright>Copyright (c) 2013-2026 Antonio Elena</Copyright>
     <PackageProjectUrl>https://github.com/aelena/useful-extensions</PackageProjectUrl>
     <RepositoryUrl>https://github.com/aelena/useful-extensions</RepositoryUrl>
     <RepositoryType>git</RepositoryType>

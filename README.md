@@ -385,8 +385,12 @@ and creates a GitHub release with the packages attached.
 ```shell
 # 1. bump <Version> in src/Aelena.CommonExtensions/Aelena.CommonExtensions.csproj and update CHANGELOG.md
 # 2. commit, then:
-git tag v2.0.1
-git push origin v2.0.1
+git tag v2.0.2
+git push origin v2.0.2
 ```
 
 Run the *Release* workflow manually with `dry_run` checked to rehearse everything except the push.
+
+## License
+
+[MIT](LICENSE).
