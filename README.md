@@ -370,3 +370,19 @@ The HTML report lands in `TestResults/report/index.html`.
 
 Analyzers run at `latest-recommended` with warnings as errors, and the library is marked trimmable and
 AOT-compatible.
+
+## Releasing
+
+Releases are tag-driven. Pushing a tag `vX.Y.Z` runs the full CI gate on that commit, packs, checks that
+the tag matches `<Version>` in the csproj, verifies the package contents, publishes to nuget.org via
+[Trusted Publishing](https://learn.microsoft.com/nuget/nuget-org/trusted-publishing) (no stored API key),
+and creates a GitHub release with the packages attached.
+
+```shell
+# 1. bump <Version> in src/Aelena.Extensions/Aelena.Extensions.csproj and update CHANGELOG.md
+# 2. commit, then:
+git tag v2.0.0
+git push origin v2.0.0
+```
+
+Run the *Release* workflow manually with `dry_run` checked to rehearse everything except the push.

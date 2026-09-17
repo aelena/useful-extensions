@@ -5,16 +5,23 @@ on:
     branches: [master]
   pull_request:
     branches: [master]
+  # Lets release.yml run this exact gate on the tagged commit before publishing,
+  # so the release gate cannot drift from the pull-request gate.
+  workflow_call:
+
+env:
+  DOTNET_NOLOGO: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
 
 jobs:
   build-test-cover:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Set up .NET SDKs and runtimes
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v6
         with:
           dotnet-version: |
             8.0.x
@@ -39,7 +46,7 @@ jobs:
 
       - name: Upload coverage report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: coverage-report
           path: TestResults/report
@@ -48,7 +55,7 @@ jobs:
         run: dotnet pack src/Aelena.Extensions/Aelena.Extensions.csproj --no-build -c Release -o artifacts
 
       - name: Upload package
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: nuget-package
-          path: artifacts/*.nupkg
+          path: artifacts/*.*nupkg

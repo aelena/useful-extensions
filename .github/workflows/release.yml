@@ -1,0 +1,139 @@
+name: Release
+
+# Publishing is driven by a tag, so what reaches NuGet is always a specific
+# commit that CI has built. Tag with the package version, e.g. v2.0.0.
+on:
+  push:
+    tags: ["v*.*.*"]
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Build and validate the package without pushing to NuGet"
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+  # Required for Trusted Publishing: lets the job request an OIDC token.
+  id-token: write
+
+env:
+  DOTNET_NOLOGO: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+
+jobs:
+  # The full CI gate (every framework, 100% coverage) must pass on the tagged
+  # commit before anything is published. Called rather than copied, so the
+  # release gate cannot drift from the pull-request gate.
+  ci:
+    uses: ./.github/workflows/ci.yml
+
+  publish:
+    needs: ci
+    runs-on: ubuntu-latest
+    # Must match the Environment field on the nuget.org trusted publishing
+    # policy. The OIDC token only carries an environment claim when the job
+    # declares one, so a policy scoped to "production" rejects a job that does
+    # not: the two have to agree exactly.
+    environment: production
+
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: |
+            10.0.x
+            11.0.x
+          dotnet-quality: preview
+
+      - name: Pack
+        shell: bash
+        run: |
+          set -euo pipefail
+          dotnet pack src/Aelena.Extensions/Aelena.Extensions.csproj -c Release -o ./artifacts -p:ContinuousIntegrationBuild=true
+
+      - name: Verify the tag matches the package version
+        if: startsWith(github.ref, 'refs/tags/')
+        shell: bash
+        run: |
+          tag="${GITHUB_REF_NAME#v}"
+          pkg=$(ls artifacts/Aelena.Extensions.[0-9]*.nupkg | head -1)
+          version=$(basename "$pkg" .nupkg | sed 's/^Aelena\.Extensions\.//')
+          echo "tag=$tag package=$version"
+          if [ "$tag" != "$version" ]; then
+            echo "::error::Tag $tag does not match package version $version. Update <Version> in src/Aelena.Extensions/Aelena.Extensions.csproj."
+            exit 1
+          fi
+
+      - name: Verify the package contents
+        shell: bash
+        run: |
+          python3 - <<'EOF'
+          import glob, re, sys, zipfile
+          pkg = glob.glob("artifacts/Aelena.Extensions.[0-9]*.nupkg")[0]
+          z = zipfile.ZipFile(pkg)
+          files = z.namelist()
+          nuspec = z.read(next(n for n in files if n.endswith(".nuspec"))).decode("utf-8")
+          failures = []
+          for tfm in ("net8.0", "net10.0", "net11.0"):
+              for ext in ("dll", "xml"):
+                  if f"lib/{tfm}/Aelena.Extensions.{ext}" not in files:
+                      failures.append(f"missing lib/{tfm}/Aelena.Extensions.{ext}")
+          if "README.md" not in files:
+              failures.append("missing README.md")
+          if not re.search(r"<repository [^>]*commit=", nuspec):
+              failures.append("nuspec has no repository commit (Source Link)")
+          if not glob.glob("artifacts/Aelena.Extensions.[0-9]*.snupkg"):
+              failures.append("missing symbols package")
+          if failures:
+              sys.exit("::error::" + "; ".join(failures))
+          print(f"OK: {pkg} contains all targets, docs, README, symbols and Source Link metadata")
+          EOF
+
+      - name: Upload packages
+        uses: actions/upload-artifact@v7
+        with:
+          name: nupkg
+          path: ./artifacts/*.*nupkg
+
+      # Trusted Publishing: GitHub mints a short-lived OIDC token, nuget.org
+      # validates it against the policy registered for this repository and
+      # workflow file, and hands back an API key valid for one hour. No
+      # long-lived secret is stored anywhere. Requires `id-token: write` on the
+      # job, and a policy on nuget.org naming this exact workflow file name.
+      #
+      # NUGET_USER is the nuget.org profile name, not an email address.
+      - name: Exchange the OIDC token for a short-lived NuGet key
+        if: startsWith(github.ref, 'refs/tags/') && !inputs.dry_run
+        id: nuget-login
+        uses: NuGet/login@v1
+        with:
+          user: ${{ secrets.NUGET_USER }}
+
+      - name: Push to NuGet
+        if: startsWith(github.ref, 'refs/tags/') && !inputs.dry_run
+        shell: bash
+        run: |
+          set -euo pipefail
+          # --skip-duplicate makes a re-run of a partially failed release safe:
+          # a version already on nuget.org is reported, not treated as a failure.
+          # The .snupkg symbols package is pushed automatically alongside.
+          dotnet nuget push "artifacts/*.nupkg" \
+            --api-key "${{ steps.nuget-login.outputs.NUGET_API_KEY }}" \
+            --source https://api.nuget.org/v3/index.json \
+            --skip-duplicate
+
+      - name: Create GitHub release
+        if: startsWith(github.ref, 'refs/tags/') && !inputs.dry_run
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          gh release create "$GITHUB_REF_NAME" \
+            --title "$GITHUB_REF_NAME" \
+            --notes "See [CHANGELOG.md](https://github.com/${{ github.repository }}/blob/master/CHANGELOG.md)." \
+            artifacts/*.*nupkg

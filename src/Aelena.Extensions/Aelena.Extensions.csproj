@@ -11,7 +11,16 @@
     <Description>A small, opinionated set of extension methods that fill real gaps in the .NET BCL for strings, sequences and comparable values.</Description>
     <PackageTags>extensions;string;linq;enumerable;utility</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageProjectUrl>https://github.com/aelena/useful-extensions</PackageProjectUrl>
     <RepositoryUrl>https://github.com/aelena/useful-extensions</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageReleaseNotes>See https://github.com/aelena/useful-extensions/blob/master/CHANGELOG.md</PackageReleaseNotes>
+    <!-- Source Link: embed the commit in the nuspec and PDB so consumers can step into the code. -->
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <DebugType>portable</DebugType>
     <IsAotCompatible Condition="'$(TargetFramework)' != 'net8.0'">true</IsAotCompatible>
     <IsTrimmable>true</IsTrimmable>
   </PropertyGroup>
