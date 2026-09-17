@@ -34,6 +34,7 @@ DateOnly.FromDateTime(DateTime.Today).IsBetween(start, end);
 - [Installing](#installing)
 - [Design rules](#design-rules)
 - [Strings](#strings)
+- [Fuzzy matching](#fuzzy-matching)
 - [Sequences](#sequences)
 - [Values](#values)
 - [Migrating from the 1.x library](#migrating-from-the-1x-library)
@@ -236,6 +237,58 @@ An enclosure that is never closed runs to the end of the string. Enclosures do n
 escape syntax: the first closing marker after an opening one ends the enclosure. For a full CSV dialect,
 use a CSV library.
 
+## Fuzzy matching
+
+### Levenshtein distance
+
+The number of single-character insertions, deletions and substitutions needed to turn one string into
+the other. Symmetric, zero for equal strings, never more than the longer length. Runs in O(n·m) with a
+stack-allocated buffer for typical string sizes.
+
+```csharp
+"kitten".LevenshteinDistance("sitting");                   // 3
+"flaw".LevenshteinDistance("lawn");                        // 2
+"colour".LevenshteinDistance("color");                     // 1
+"Kitten".LevenshteinDistance("kitten");                    // 1
+"Kitten".LevenshteinDistance("kitten", ignoreCase: true);  // 0
+```
+
+### Closest candidates to a target
+
+Ranks a collection against a target, best match first. Ties keep their source order, so a stable input
+gives a stable answer. Useful for "did you mean" suggestions, matching user input to a known list of
+commands, or reconciling slightly different spellings.
+
+```csharp
+var words = new[] { "cooler", "dollar", "collar", "colour" };
+
+words.ClosestTo("color");       // [("colour", 1)]
+words.ClosestTo("color", 3);    // [("colour", 1), ("cooler", 2), ("collar", 2)]
+```
+
+`ClosestTo` returns `(string Value, int Distance)` pairs, so the caller can apply a cutoff:
+
+```csharp
+var suggestion = commands.ClosestTo(input) is [{ Distance: <= 2 } best]
+    ? $"Did you mean '{best.Value}'?"
+    : null;
+```
+
+### Closest pairs within a collection
+
+Measures every unordered pair and returns the nearest ones, best pair first. This is O(n²) in the number
+of strings, which is fine for hundreds of items and worth thinking about for hundreds of thousands.
+Handy for spotting near-duplicates in a list of names, tags or file names.
+
+```csharp
+var names = new[] { "color", "colour", "dollar", "collar" };
+
+names.ClosestPairs();      // [("color", "colour", 1)]
+names.ClosestPairs(2);     // [("color", "colour", 1), ("dollar", "collar", 1)]
+```
+
+Both ranking members accept `ignoreCase: true`, and both return an empty list for `count: 0`.
+
 ## Sequences
 
 ### Index of the first, last or every match
@@ -362,7 +415,7 @@ previews), plus the .NET 8, 10 and 11 runtimes to execute the tests on every tar
 
 ```shell
 dotnet build
-dotnet test                      # 256 tests x 3 frameworks
+dotnet test                      # 290 tests x 3 frameworks
 pwsh scripts/coverage.ps1        # tests + merged coverage report + 100% gate
 dotnet pack src/Aelena.CommonExtensions/Aelena.CommonExtensions.csproj -c Release
 ```
@@ -385,8 +438,8 @@ and creates a GitHub release with the packages attached.
 ```shell
 # 1. bump <Version> in src/Aelena.CommonExtensions/Aelena.CommonExtensions.csproj and update CHANGELOG.md
 # 2. commit, then:
-git tag v2.0.2
-git push origin v2.0.2
+git tag v2.1.0
+git push origin v2.1.0
 ```
 
 Run the *Release* workflow manually with `dry_run` checked to rehearse everything except the push.

@@ -4,6 +4,14 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [2.1.0] - 2026-09-17
+
+### Added
+
+- `LevenshteinDistance` on `string`, with an `ignoreCase` option.
+- `ClosestTo` on `IEnumerable<string>`: ranks candidates against a target, best match first.
+- `ClosestPairs` on `IEnumerable<string>`: finds the nearest pairs inside a collection.
+
 ## [2.0.2] - 2026-09-17
 
 ### Added
@@ -45,5 +53,6 @@ nothing in 2.0 is source-compatible with it. See the
 - `Interpolate`, `AreAllNull`, `ReplaceWord`, `InsertMultiple` and `ParseToStringSafe`,
   whose behaviour was incorrect or undefined.
 
+[2.1.0]: https://github.com/aelena/useful-extensions/releases/tag/v2.1.0
 [2.0.2]: https://github.com/aelena/useful-extensions/releases/tag/v2.0.2
 [2.0.1]: https://github.com/aelena/useful-extensions/releases/tag/v2.0.1

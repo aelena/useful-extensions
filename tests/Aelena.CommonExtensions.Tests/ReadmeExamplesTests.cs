@@ -158,6 +158,31 @@ public class ReadmeExamplesTests
     }
 
     [Fact]
+    public void Fuzzy_matching()
+    {
+        Assert.Equal(3, "kitten".LevenshteinDistance("sitting"));
+        Assert.Equal(2, "flaw".LevenshteinDistance("lawn"));
+        Assert.Equal(1, "colour".LevenshteinDistance("color"));
+        Assert.Equal(1, "Kitten".LevenshteinDistance("kitten"));
+        Assert.Equal(0, "Kitten".LevenshteinDistance("kitten", ignoreCase: true));
+
+        var words = new[] { "cooler", "dollar", "collar", "colour" };
+        Assert.Equal([("colour", 1)], words.ClosestTo("color"));
+        Assert.Equal([("colour", 1), ("cooler", 2), ("collar", 2)], words.ClosestTo("color", 3));
+
+        var commands = new[] { "build", "test", "pack", "publish" };
+        var suggestion = commands.ClosestTo("pubish") is [{ Distance: <= 2 } best]
+            ? $"Did you mean '{best.Value}'?"
+            : null;
+        Assert.Equal("Did you mean 'publish'?", suggestion);
+        Assert.Null(commands.ClosestTo("xyzzy") is [{ Distance: <= 2 } other] ? other.Value : null);
+
+        var names = new[] { "color", "colour", "dollar", "collar" };
+        Assert.Equal([("color", "colour", 1)], names.ClosestPairs());
+        Assert.Equal([("color", "colour", 1), ("dollar", "collar", 1)], names.ClosestPairs(2));
+    }
+
+    [Fact]
     public void Sequence_index_lookup()
     {
         var scores = new[] { 3, 8, 12, 8 };

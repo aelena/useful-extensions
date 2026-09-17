@@ -8,7 +8,7 @@
     <IsPackable>true</IsPackable>
     <!-- The nuget.org package keeps the historical id; assembly and namespace are Aelena.CommonExtensions. -->
     <PackageId>Common-Extensions</PackageId>
-    <Version>2.0.2</Version>
+    <Version>2.1.0</Version>
     <Description>A small, opinionated set of extension methods that fill real gaps in the .NET BCL for strings, sequences and comparable values.</Description>
     <PackageTags>extensions;string;linq;enumerable;utility</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>
