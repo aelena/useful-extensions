@@ -1,5 +1,7 @@
 # Aelena.Extensions
 
+Published on NuGet as [**Common-Extensions**](https://www.nuget.org/packages/Common-Extensions).
+
 [![CI](https://github.com/aelena/useful-extensions/actions/workflows/ci.yml/badge.svg)](https://github.com/aelena/useful-extensions/actions/workflows/ci.yml)
 ![.NET 8 | 10 | 11](https://img.shields.io/badge/.NET-8.0%20%7C%2010.0%20%7C%2011.0-512BD4)
 ![C# 14](https://img.shields.io/badge/C%23-14-239120)
@@ -57,8 +59,10 @@ semantics, and gives them modern signatures:
 The package targets `net8.0`, `net10.0` and `net11.0`.
 
 ```shell
-dotnet add package Aelena.Extensions
+dotnet add package Common-Extensions
 ```
+
+The package id is `Common-Extensions` (kept from version 0.8); the assembly and namespace are `Aelena.Extensions`.
 
 Or reference the project directly:
 

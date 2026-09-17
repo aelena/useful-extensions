@@ -6,7 +6,8 @@
     <AssemblyName>Aelena.Extensions</AssemblyName>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <IsPackable>true</IsPackable>
-    <PackageId>Aelena.Extensions</PackageId>
+    <!-- The nuget.org package keeps the historical id; assembly and namespace are Aelena.Extensions. -->
+    <PackageId>Common-Extensions</PackageId>
     <Version>2.0.0</Version>
     <Description>A small, opinionated set of extension methods that fill real gaps in the .NET BCL for strings, sequences and comparable values.</Description>
     <PackageTags>extensions;string;linq;enumerable;utility</PackageTags>

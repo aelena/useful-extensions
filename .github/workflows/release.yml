@@ -61,8 +61,8 @@ jobs:
         shell: bash
         run: |
           tag="${GITHUB_REF_NAME#v}"
-          pkg=$(ls artifacts/Aelena.Extensions.[0-9]*.nupkg | head -1)
-          version=$(basename "$pkg" .nupkg | sed 's/^Aelena\.Extensions\.//')
+          pkg=$(ls artifacts/Common-Extensions.[0-9]*.nupkg | head -1)
+          version=$(basename "$pkg" .nupkg | sed 's/^Common-Extensions\.//')
           echo "tag=$tag package=$version"
           if [ "$tag" != "$version" ]; then
             echo "::error::Tag $tag does not match package version $version. Update <Version> in src/Aelena.Extensions/Aelena.Extensions.csproj."
@@ -74,7 +74,7 @@ jobs:
         run: |
           python3 - <<'EOF'
           import glob, re, sys, zipfile
-          pkg = glob.glob("artifacts/Aelena.Extensions.[0-9]*.nupkg")[0]
+          pkg = glob.glob("artifacts/Common-Extensions.[0-9]*.nupkg")[0]
           z = zipfile.ZipFile(pkg)
           files = z.namelist()
           nuspec = z.read(next(n for n in files if n.endswith(".nuspec"))).decode("utf-8")
@@ -87,7 +87,7 @@ jobs:
               failures.append("missing README.md")
           if not re.search(r"<repository [^>]*commit=", nuspec):
               failures.append("nuspec has no repository commit (Source Link)")
-          if not glob.glob("artifacts/Aelena.Extensions.[0-9]*.snupkg"):
+          if not glob.glob("artifacts/Common-Extensions.[0-9]*.snupkg"):
               failures.append("missing symbols package")
           if failures:
               sys.exit("::error::" + "; ".join(failures))

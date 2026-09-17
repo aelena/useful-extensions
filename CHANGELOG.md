@@ -6,7 +6,8 @@ All notable changes to this project are documented here. The format follows
 
 ## [2.0.0] - 2026-09-17
 
-Complete rewrite for .NET 8, 10 and 11. Version 1.x targeted .NET Framework 4.5;
+Complete rewrite for .NET 8, 10 and 11, published under the existing NuGet id `Common-Extensions`
+(previous release: 0.8.0). Earlier versions targeted .NET Framework 4.5;
 nothing in 2.0 is source-compatible with it. See the
 [migration table](README.md#migrating-from-the-1x-library) in the README.
 
