@@ -87,6 +87,22 @@ public class StringEditingTests
     }
 
     [Fact]
+    public void RemoveAll_returns_same_instance_when_nothing_matches()
+    {
+        const string input = "abc";
+        Assert.Same(input, input.RemoveAll("z"));
+        Assert.Same(input, input.RemoveAll(StringComparison.OrdinalIgnoreCase, "Z"));
+        Assert.Same(input, input.RemoveAll(new[] { "z" }.AsEnumerable(), StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public void RemoveAll_with_comparison_removes_every_occurrence_including_at_the_ends()
+    {
+        Assert.Equal("--", "xAB-ab-AB".RemoveAll(StringComparison.OrdinalIgnoreCase, "ab", "X"));
+        Assert.Equal("B", "aBa".RemoveAll(StringComparison.OrdinalIgnoreCase, "A"));
+    }
+
+    [Fact]
     public void RemoveAll_with_no_values_returns_same_instance()
     {
         const string input = "abc";
@@ -103,6 +119,9 @@ public class StringEditingTests
         Assert.Throws<ArgumentNullException>(() => "abc".RemoveAll((IEnumerable<string>)null!));
         Assert.Throws<ArgumentException>(() => "abc".RemoveAll(""));
         Assert.Throws<ArgumentException>(() => "abc".RemoveAll(new List<string> { "" }));
+        Assert.Throws<ArgumentException>(() => "abc".RemoveAll(StringComparison.OrdinalIgnoreCase, ""));
+        Assert.Throws<ArgumentNullException>(() => "abc".RemoveAll(new List<string> { null! }));
+        Assert.Throws<ArgumentNullException>(() => "abc".RemoveAll(StringComparison.OrdinalIgnoreCase, [null!]));
     }
 
     // ------------------------------------------------------------------ Truncate

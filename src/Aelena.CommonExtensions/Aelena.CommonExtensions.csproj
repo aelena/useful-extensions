@@ -1,14 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net8.0;net10.0;net11.0</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net8.0;net10.0;net11.0</TargetFrameworks>
     <RootNamespace>Aelena.CommonExtensions</RootNamespace>
     <AssemblyName>Aelena.CommonExtensions</AssemblyName>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <IsPackable>true</IsPackable>
     <!-- The nuget.org package keeps the historical id; assembly and namespace are Aelena.CommonExtensions. -->
     <PackageId>Common-Extensions</PackageId>
-    <Version>2.1.0</Version>
+    <Version>2.2.0</Version>
     <Description>A small, opinionated set of extension methods that fill real gaps in the .NET BCL for strings, sequences and comparable values.</Description>
     <PackageTags>extensions;string;linq;enumerable;utility</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>
@@ -25,11 +25,24 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <DebugType>portable</DebugType>
     <IsAotCompatible Condition="'$(TargetFramework)' != 'net8.0'">true</IsAotCompatible>
-    <IsTrimmable>true</IsTrimmable>
+    <IsTrimmable Condition="'$(TargetFramework)' != 'netstandard2.0'">true</IsTrimmable>
   </PropertyGroup>
 
   <ItemGroup>
     <None Include="../../README.md" Pack="true" PackagePath="/" />
   </ItemGroup>
+
+  <!-- .NET Standard 2.0 needs Span<T> from a package and compile-time polyfills for Index/Range and the
+       nullability and caller-info attributes. PolySharp is a source generator; nothing of it ships in the package.
+       InlineArrayAttribute is excluded on purpose: the .NET Framework runtime does not understand inline arrays,
+       so the compiler must fall back to arrays for params ReadOnlySpan<T>. -->
+  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+    <PackageReference Include="System.Memory" />
+    <PackageReference Include="PolySharp" PrivateAssets="all" IncludeAssets="runtime; build; native; contentfiles; analyzers; buildtransitive" />
+  </ItemGroup>
+
+  <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+    <PolySharpExcludeGeneratedTypes>System.Runtime.CompilerServices.InlineArrayAttribute</PolySharpExcludeGeneratedTypes>
+  </PropertyGroup>
 
 </Project>

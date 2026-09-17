@@ -85,9 +85,9 @@ public class ValueExtensionsTests
         Assert.True(1.0m.IsBetween(1.0m, 1.0m));
         Assert.False(1.0m.IsBetween(1.0m, 1.0m, inclusive: false));
 
-        var today = new DateOnly(2026, 9, 17);
-        Assert.True(today.IsBetween(new DateOnly(2026, 1, 1), new DateOnly(2026, 12, 31)));
-        Assert.False(today.IsBetween(new DateOnly(2027, 1, 1), new DateOnly(2027, 12, 31)));
+        var today = new DateTime(2026, 9, 17, 0, 0, 0, DateTimeKind.Utc);
+        Assert.True(today.IsBetween(new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc), new DateTime(2026, 12, 31, 0, 0, 0, DateTimeKind.Utc)));
+        Assert.False(today.IsBetween(new DateTime(2027, 1, 1, 0, 0, 0, DateTimeKind.Utc), new DateTime(2027, 12, 31, 0, 0, 0, DateTimeKind.Utc)));
 
         Assert.True("m".IsBetween("a", "z"));
         Assert.False("aardvark".IsBetween("b", "c"));

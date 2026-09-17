@@ -15,7 +15,8 @@ env:
 
 jobs:
   build-test-cover:
-    runs-on: ubuntu-latest
+    # Windows so the net48 test target runs and exercises the netstandard2.0 build.
+    runs-on: windows-latest
 
     steps:
       - uses: actions/checkout@v7

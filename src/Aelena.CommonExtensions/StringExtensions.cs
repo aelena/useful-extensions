@@ -25,8 +25,8 @@ public static class StringExtensions
         /// <returns>The substring after the marker, or the whole string when the marker is not found.</returns>
         public string After(string marker, StringComparison comparison = StringComparison.Ordinal)
         {
-            ArgumentNullException.ThrowIfNull(s);
-            ArgumentException.ThrowIfNullOrEmpty(marker);
+            Guard.NotNull(s);
+            Guard.NotNullOrEmpty(marker);
 
             var i = s.IndexOf(marker, comparison);
             return i < 0 ? s : s[(i + marker.Length)..];
@@ -37,7 +37,7 @@ public static class StringExtensions
         /// <returns>The substring after the marker, or the whole string when the marker is not found.</returns>
         public string After(char marker)
         {
-            ArgumentNullException.ThrowIfNull(s);
+            Guard.NotNull(s);
 
             var i = s.IndexOf(marker);
             return i < 0 ? s : s[(i + 1)..];
@@ -49,8 +49,8 @@ public static class StringExtensions
         /// <returns>The substring after the last marker, or the whole string when the marker is not found.</returns>
         public string AfterLast(string marker, StringComparison comparison = StringComparison.Ordinal)
         {
-            ArgumentNullException.ThrowIfNull(s);
-            ArgumentException.ThrowIfNullOrEmpty(marker);
+            Guard.NotNull(s);
+            Guard.NotNullOrEmpty(marker);
 
             var i = s.LastIndexOf(marker, comparison);
             return i < 0 ? s : s[(i + marker.Length)..];
@@ -61,7 +61,7 @@ public static class StringExtensions
         /// <returns>The substring after the last marker, or the whole string when the marker is not found.</returns>
         public string AfterLast(char marker)
         {
-            ArgumentNullException.ThrowIfNull(s);
+            Guard.NotNull(s);
 
             var i = s.LastIndexOf(marker);
             return i < 0 ? s : s[(i + 1)..];
@@ -73,8 +73,8 @@ public static class StringExtensions
         /// <returns>The substring before the marker, or the whole string when the marker is not found.</returns>
         public string Before(string marker, StringComparison comparison = StringComparison.Ordinal)
         {
-            ArgumentNullException.ThrowIfNull(s);
-            ArgumentException.ThrowIfNullOrEmpty(marker);
+            Guard.NotNull(s);
+            Guard.NotNullOrEmpty(marker);
 
             var i = s.IndexOf(marker, comparison);
             return i < 0 ? s : s[..i];
@@ -85,7 +85,7 @@ public static class StringExtensions
         /// <returns>The substring before the marker, or the whole string when the marker is not found.</returns>
         public string Before(char marker)
         {
-            ArgumentNullException.ThrowIfNull(s);
+            Guard.NotNull(s);
 
             var i = s.IndexOf(marker);
             return i < 0 ? s : s[..i];
@@ -97,8 +97,8 @@ public static class StringExtensions
         /// <returns>The substring before the last marker, or the whole string when the marker is not found.</returns>
         public string BeforeLast(string marker, StringComparison comparison = StringComparison.Ordinal)
         {
-            ArgumentNullException.ThrowIfNull(s);
-            ArgumentException.ThrowIfNullOrEmpty(marker);
+            Guard.NotNull(s);
+            Guard.NotNullOrEmpty(marker);
 
             var i = s.LastIndexOf(marker, comparison);
             return i < 0 ? s : s[..i];
@@ -109,7 +109,7 @@ public static class StringExtensions
         /// <returns>The substring before the last marker, or the whole string when the marker is not found.</returns>
         public string BeforeLast(char marker)
         {
-            ArgumentNullException.ThrowIfNull(s);
+            Guard.NotNull(s);
 
             var i = s.LastIndexOf(marker);
             return i < 0 ? s : s[..i];
@@ -125,9 +125,9 @@ public static class StringExtensions
         /// <returns>The enclosed text, or <see cref="string.Empty"/> when either marker is missing.</returns>
         public string Between(string start, string end, StringComparison comparison = StringComparison.Ordinal)
         {
-            ArgumentNullException.ThrowIfNull(s);
-            ArgumentException.ThrowIfNullOrEmpty(start);
-            ArgumentException.ThrowIfNullOrEmpty(end);
+            Guard.NotNull(s);
+            Guard.NotNullOrEmpty(start);
+            Guard.NotNullOrEmpty(end);
 
             var i = s.IndexOf(start, comparison);
             if (i < 0)
@@ -150,9 +150,9 @@ public static class StringExtensions
         /// <returns>The enclosed pieces in document order. An unterminated opening marker yields nothing.</returns>
         public IEnumerable<string> AllBetween(string start, string end, StringComparison comparison = StringComparison.Ordinal)
         {
-            ArgumentNullException.ThrowIfNull(s);
-            ArgumentException.ThrowIfNullOrEmpty(start);
-            ArgumentException.ThrowIfNullOrEmpty(end);
+            Guard.NotNull(s);
+            Guard.NotNullOrEmpty(start);
+            Guard.NotNullOrEmpty(end);
 
             return Iterate();
 
@@ -189,12 +189,12 @@ public static class StringExtensions
         /// <returns>A new string, or the original instance when there is nothing to replace.</returns>
         public string ReplaceFirst(string oldValue, string newValue, StringComparison comparison = StringComparison.Ordinal)
         {
-            ArgumentNullException.ThrowIfNull(s);
-            ArgumentException.ThrowIfNullOrEmpty(oldValue);
-            ArgumentNullException.ThrowIfNull(newValue);
+            Guard.NotNull(s);
+            Guard.NotNullOrEmpty(oldValue);
+            Guard.NotNull(newValue);
 
             var i = s.IndexOf(oldValue, comparison);
-            return i < 0 ? s : string.Concat(s.AsSpan(0, i), newValue, s.AsSpan(i + oldValue.Length));
+            return i < 0 ? s : Compat.Concat(s.AsSpan(0, i), newValue, s.AsSpan(i + oldValue.Length));
         }
 
         /// <summary>Replaces only the last occurrence of <paramref name="oldValue"/>.</summary>
@@ -204,12 +204,12 @@ public static class StringExtensions
         /// <returns>A new string, or the original instance when there is nothing to replace.</returns>
         public string ReplaceLast(string oldValue, string newValue, StringComparison comparison = StringComparison.Ordinal)
         {
-            ArgumentNullException.ThrowIfNull(s);
-            ArgumentException.ThrowIfNullOrEmpty(oldValue);
-            ArgumentNullException.ThrowIfNull(newValue);
+            Guard.NotNull(s);
+            Guard.NotNullOrEmpty(oldValue);
+            Guard.NotNull(newValue);
 
             var i = s.LastIndexOf(oldValue, comparison);
-            return i < 0 ? s : string.Concat(s.AsSpan(0, i), newValue, s.AsSpan(i + oldValue.Length));
+            return i < 0 ? s : Compat.Concat(s.AsSpan(0, i), newValue, s.AsSpan(i + oldValue.Length));
         }
 
         /// <summary>Removes every occurrence of each of the given values, in order.</summary>
@@ -223,12 +223,12 @@ public static class StringExtensions
         /// <returns>A new string with all the values removed.</returns>
         public string RemoveAll(StringComparison comparison, params ReadOnlySpan<string> values)
         {
-            ArgumentNullException.ThrowIfNull(s);
+            Guard.NotNull(s);
 
             var result = s;
             foreach (var value in values)
             {
-                result = result.Replace(value, string.Empty, comparison);
+                result = Compat.Replace(result, value, string.Empty, comparison);
             }
 
             return result;
@@ -240,13 +240,13 @@ public static class StringExtensions
         /// <returns>A new string with all the values removed.</returns>
         public string RemoveAll(IEnumerable<string> values, StringComparison comparison = StringComparison.Ordinal)
         {
-            ArgumentNullException.ThrowIfNull(s);
-            ArgumentNullException.ThrowIfNull(values);
+            Guard.NotNull(s);
+            Guard.NotNull(values);
 
             var result = s;
             foreach (var value in values)
             {
-                result = result.Replace(value, string.Empty, comparison);
+                result = Compat.Replace(result, value, string.Empty, comparison);
             }
 
             return result;
@@ -260,13 +260,13 @@ public static class StringExtensions
         /// <returns>The original instance when it already fits, otherwise a shortened copy ending in <paramref name="suffix"/>.</returns>
         public string Truncate(int maxLength, string suffix = "")
         {
-            ArgumentNullException.ThrowIfNull(s);
-            ArgumentNullException.ThrowIfNull(suffix);
-            ArgumentOutOfRangeException.ThrowIfNegative(maxLength);
+            Guard.NotNull(s);
+            Guard.NotNull(suffix);
+            Guard.NotNegative(maxLength);
 
             return s.Length <= maxLength ? s
                 : suffix.Length >= maxLength ? suffix[..maxLength]
-                : string.Concat(s.AsSpan(0, maxLength - suffix.Length), suffix);
+                : Compat.Concat(s.AsSpan(0, maxLength - suffix.Length), suffix);
         }
 
         /// <summary>
@@ -277,7 +277,7 @@ public static class StringExtensions
         /// <returns>The part of the requested range that lies inside the string.</returns>
         public string SafeSubstring(int start, int length)
         {
-            ArgumentNullException.ThrowIfNull(s);
+            Guard.NotNull(s);
 
             if (length <= 0)
             {
@@ -294,7 +294,7 @@ public static class StringExtensions
         /// <returns>Everything from <paramref name="start"/> to the end, or an empty string when <paramref name="start"/> is past the end.</returns>
         public string SafeSubstring(int start)
         {
-            ArgumentNullException.ThrowIfNull(s);
+            Guard.NotNull(s);
 
             return start >= s.Length ? string.Empty : s[Math.Max(start, 0)..];
         }
@@ -311,7 +311,7 @@ public static class StringExtensions
         /// <returns>The original instance when there was nothing to strip, otherwise a new string in normalization form C.</returns>
         public string RemoveDiacritics()
         {
-            ArgumentNullException.ThrowIfNull(s);
+            Guard.NotNull(s);
 
             var decomposed = s.Normalize(NormalizationForm.FormD);
             Span<char> buffer = decomposed.Length <= 256 ? stackalloc char[256] : new char[decomposed.Length];
@@ -327,7 +327,7 @@ public static class StringExtensions
 
             return kept == decomposed.Length
                 ? s
-                : new string(buffer[..kept]).Normalize(NormalizationForm.FormC);
+                : buffer[..kept].ToString().Normalize(NormalizationForm.FormC);
         }
 
         // ------------------------------------------------------------------ searching
@@ -342,8 +342,8 @@ public static class StringExtensions
         /// <returns>The zero-based indices in ascending order.</returns>
         public IEnumerable<int> AllIndicesOf(string value, StringComparison comparison = StringComparison.Ordinal, bool overlapping = false)
         {
-            ArgumentNullException.ThrowIfNull(s);
-            ArgumentException.ThrowIfNullOrEmpty(value);
+            Guard.NotNull(s);
+            Guard.NotNullOrEmpty(value);
 
             return Iterate();
 
@@ -364,7 +364,7 @@ public static class StringExtensions
         /// <returns>The zero-based indices in ascending order.</returns>
         public IEnumerable<int> AllIndicesOf(char value)
         {
-            ArgumentNullException.ThrowIfNull(s);
+            Guard.NotNull(s);
 
             return Iterate();
 
@@ -390,11 +390,11 @@ public static class StringExtensions
         /// <returns><see langword="true"/> when any candidate is found.</returns>
         public bool ContainsAny(StringComparison comparison, params ReadOnlySpan<string> values)
         {
-            ArgumentNullException.ThrowIfNull(s);
+            Guard.NotNull(s);
 
             foreach (var value in values)
             {
-                if (s.Contains(value, comparison))
+                if (Compat.Contains(s, value, comparison))
                 {
                     return true;
                 }
@@ -409,12 +409,12 @@ public static class StringExtensions
         /// <returns><see langword="true"/> when any candidate is found.</returns>
         public bool ContainsAny(IEnumerable<string> values, StringComparison comparison = StringComparison.Ordinal)
         {
-            ArgumentNullException.ThrowIfNull(s);
-            ArgumentNullException.ThrowIfNull(values);
+            Guard.NotNull(s);
+            Guard.NotNull(values);
 
             foreach (var value in values)
             {
-                if (s.Contains(value, comparison))
+                if (Compat.Contains(s, value, comparison))
                 {
                     return true;
                 }
@@ -434,11 +434,11 @@ public static class StringExtensions
         /// <returns>The first candidate found, or <see langword="null"/> when none is.</returns>
         public string? FirstContained(StringComparison comparison, params ReadOnlySpan<string> values)
         {
-            ArgumentNullException.ThrowIfNull(s);
+            Guard.NotNull(s);
 
             foreach (var value in values)
             {
-                if (s.Contains(value, comparison))
+                if (Compat.Contains(s, value, comparison))
                 {
                     return value;
                 }
@@ -453,12 +453,12 @@ public static class StringExtensions
         /// <returns>The first candidate found, or <see langword="null"/> when none is.</returns>
         public string? FirstContained(IEnumerable<string> values, StringComparison comparison = StringComparison.Ordinal)
         {
-            ArgumentNullException.ThrowIfNull(s);
-            ArgumentNullException.ThrowIfNull(values);
+            Guard.NotNull(s);
+            Guard.NotNull(values);
 
             foreach (var value in values)
             {
-                if (s.Contains(value, comparison))
+                if (Compat.Contains(s, value, comparison))
                 {
                     return value;
                 }
@@ -499,6 +499,8 @@ public static class StringExtensions
         /// Matching is ordinal. Longer separators win over shorter ones at the same position, so <c>"||"</c> beats <c>"|"</c>.
         /// An enclosure that is never closed runs to the end of the string. Enclosures do not nest and there is no escape
         /// syntax: the first closing marker after an opening one ends the enclosure.
+        /// On .NET Standard 2.0, where <c>StringSplitOptions.TrimEntries</c> is not declared, pass <c>(StringSplitOptions)2</c>
+        /// to trim entries; the flag has that value on every .NET version.
         /// </remarks>
         /// <param name="separators">The separator texts. At least one is required and none may be empty.</param>
         /// <param name="enclosures">Opening and closing marker pairs that protect separators. Markers are kept in the output. None may be empty.</param>
@@ -509,9 +511,9 @@ public static class StringExtensions
             IEnumerable<(string Open, string Close)> enclosures,
             StringSplitOptions options = StringSplitOptions.None)
         {
-            ArgumentNullException.ThrowIfNull(s);
-            ArgumentNullException.ThrowIfNull(separators);
-            ArgumentNullException.ThrowIfNull(enclosures);
+            Guard.NotNull(s);
+            Guard.NotNull(separators);
+            Guard.NotNull(enclosures);
 
             var seps = separators.ToArray();
             if (seps.Length == 0)
@@ -521,14 +523,14 @@ public static class StringExtensions
 
             foreach (var sep in seps)
             {
-                ArgumentException.ThrowIfNullOrEmpty(sep, nameof(separators));
+                Guard.NotNullOrEmpty(sep, nameof(separators));
             }
 
             var pairs = enclosures.ToArray();
             foreach (var (open, close) in pairs)
             {
-                ArgumentException.ThrowIfNullOrEmpty(open, nameof(enclosures));
-                ArgumentException.ThrowIfNullOrEmpty(close, nameof(enclosures));
+                Guard.NotNullOrEmpty(open, nameof(enclosures));
+                Guard.NotNullOrEmpty(close, nameof(enclosures));
             }
 
             Array.Sort(seps, static (a, b) => b.Length.CompareTo(a.Length));
@@ -599,12 +601,12 @@ public static class StringExtensions
 
             bool TryPrepare(ReadOnlySpan<char> raw, out string token)
             {
-                if (options.HasFlag(StringSplitOptions.TrimEntries))
+                if ((options & Compat.TrimEntries) != 0)
                 {
                     raw = raw.Trim();
                 }
 
-                if (raw.IsEmpty && options.HasFlag(StringSplitOptions.RemoveEmptyEntries))
+                if (raw.IsEmpty && (options & StringSplitOptions.RemoveEmptyEntries) != 0)
                 {
                     token = string.Empty;
                     return false;

@@ -4,6 +4,19 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [2.2.0] - 2026-09-17
+
+### Added
+
+- `netstandard2.0` target, so the library runs on .NET Framework 4.6.2+, .NET Core 2+, Mono, Unity and
+  in other .NET Standard 2.0 libraries. Behaviour is identical on every target; the test suite runs the
+  .NET Standard build on .NET Framework 4.8.
+
+### Changed
+
+- On .NET Standard 2.0, `SplitOutside` reads the trim flag by value (`(StringSplitOptions)2`) because that
+  framework does not declare `StringSplitOptions.TrimEntries`.
+
 ## [2.1.0] - 2026-09-17
 
 ### Added
@@ -53,6 +66,7 @@ nothing in 2.0 is source-compatible with it. See the
 - `Interpolate`, `AreAllNull`, `ReplaceWord`, `InsertMultiple` and `ParseToStringSafe`,
   whose behaviour was incorrect or undefined.
 
+[2.2.0]: https://github.com/aelena/useful-extensions/releases/tag/v2.2.0
 [2.1.0]: https://github.com/aelena/useful-extensions/releases/tag/v2.1.0
 [2.0.2]: https://github.com/aelena/useful-extensions/releases/tag/v2.0.2
 [2.0.1]: https://github.com/aelena/useful-extensions/releases/tag/v2.0.1

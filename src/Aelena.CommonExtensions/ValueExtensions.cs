@@ -30,7 +30,7 @@ public static class ValueExtensions
         /// <returns><see langword="true"/> when a candidate is equal to the value.</returns>
         public bool In(IEnumerable<T> candidates)
         {
-            ArgumentNullException.ThrowIfNull(candidates);
+            Guard.NotNull(candidates);
 
             return candidates.Contains(value);
         }

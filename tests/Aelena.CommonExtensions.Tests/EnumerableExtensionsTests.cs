@@ -154,7 +154,7 @@ public class EnumerableExtensionsTests
     [Fact]
     public void HasItems_narrows_nullability_for_the_compiler()
     {
-        List<string>? maybe = Random.Shared.Next() >= 0 ? ["x"] : null;
+        List<string>? maybe = Environment.TickCount != int.MinValue ? ["x"] : null;
 
         if (maybe.HasItems())
         {

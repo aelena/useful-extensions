@@ -156,9 +156,9 @@ public class StringSearchingTests
     [Theory]
     [InlineData("a,,b", StringSplitOptions.RemoveEmptyEntries, new[] { "a", "b" })]
     [InlineData("", StringSplitOptions.RemoveEmptyEntries, new string[0])]
-    [InlineData(" a , b ", StringSplitOptions.TrimEntries, new[] { "a", "b" })]
-    [InlineData(" a , , b ", StringSplitOptions.TrimEntries, new[] { "a", "", "b" })]
-    [InlineData(" a , , b ", StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries, new[] { "a", "b" })]
+    [InlineData(" a , b ", Split.TrimEntries, new[] { "a", "b" })]
+    [InlineData(" a , , b ", Split.TrimEntries, new[] { "a", "", "b" })]
+    [InlineData(" a , , b ", Split.TrimEntries | StringSplitOptions.RemoveEmptyEntries, new[] { "a", "b" })]
     [InlineData(" a , , b ", StringSplitOptions.RemoveEmptyEntries, new[] { " a ", " ", " b " })]
     public void SplitOutside_honours_split_options(string input, StringSplitOptions options, string[] expected)
         => Assert.Equal(expected, input.SplitOutside(',', '"', options));
@@ -167,7 +167,7 @@ public class StringSearchingTests
     public void SplitOutside_string_overload_uses_distinct_open_and_close_markers()
     {
         Assert.Equal(["f(a, b)", "c", "g(d)"], "f(a, b), c, g(d)".SplitOutside(", ", ("(", ")")));
-        Assert.Equal(["a", "b"], "a, b".SplitOutside(", ", ("(", ")"), StringSplitOptions.TrimEntries));
+        Assert.Equal(["a", "b"], "a, b".SplitOutside(", ", ("(", ")"), Split.TrimEntries));
     }
 
     [Fact]

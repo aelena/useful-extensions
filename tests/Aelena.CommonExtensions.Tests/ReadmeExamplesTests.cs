@@ -38,7 +38,7 @@ public class ReadmeExamplesTests
         Assert.True(status.In(Status.Draft, Status.Pending));
         Assert.False(Status.Published.In(Status.Draft, Status.Pending));
 
-        var today = DateOnly.FromDateTime(DateTime.Today);
+        var today = DateTime.Today;
         Assert.True(today.IsBetween(today.AddDays(-1), today.AddDays(1)));
     }
 
@@ -153,7 +153,7 @@ public class ReadmeExamplesTests
         Assert.Equal(["a", "\"b,c\"", "d"], "a,\"b,c\",d".SplitOutside(',', '"'));
         Assert.Equal(["f(a, b)", "c", "g(d)"], "f(a, b), c, g(d)".SplitOutside(", ", ("(", ")")));
         Assert.Equal(["\"a,b\"", "[c;d]", "e"], "\"a,b\";[c;d],e".SplitOutside([",", ";"], [("\"", "\""), ("[", "]")]));
-        Assert.Equal(["a", "b"], " a , , b ".SplitOutside(',', '"', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries));
+        Assert.Equal(["a", "b"], " a , , b ".SplitOutside(',', '"', Split.TrimEntries | StringSplitOptions.RemoveEmptyEntries));
         Assert.Equal(["a", "b", "c"], "a||b|c".SplitOutside(["|", "||"], []));
     }
 
@@ -243,8 +243,8 @@ public class ReadmeExamplesTests
         Assert.True(10.IsBetween(1, 10));
         Assert.False(10.IsBetween(1, 10, inclusive: false));
 
-        var today = new DateOnly(2026, 9, 17);
-        Assert.True(today.IsBetween(new DateOnly(2026, 7, 1), new DateOnly(2026, 9, 30)));
+        var today = new DateTime(2026, 9, 17, 0, 0, 0, DateTimeKind.Utc);
+        Assert.True(today.IsBetween(new DateTime(2026, 7, 1, 0, 0, 0, DateTimeKind.Utc), new DateTime(2026, 9, 30, 0, 0, 0, DateTimeKind.Utc)));
 
         var statusCode = System.Net.HttpStatusCode.NoContent;
         Assert.True(((int)statusCode).IsBetween(200, 299));

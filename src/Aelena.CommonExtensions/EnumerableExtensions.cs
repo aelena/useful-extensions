@@ -24,9 +24,9 @@ public static class EnumerableExtensions
         /// <returns>The zero-based index (relative to the whole sequence) of the first match, or -1 when there is none.</returns>
         public int FindIndex(int startIndex, Func<T, bool> predicate)
         {
-            ArgumentNullException.ThrowIfNull(source);
-            ArgumentNullException.ThrowIfNull(predicate);
-            ArgumentOutOfRangeException.ThrowIfNegative(startIndex);
+            Guard.NotNull(source);
+            Guard.NotNull(predicate);
+            Guard.NotNegative(startIndex);
 
             var i = 0;
             foreach (var item in source)
@@ -47,8 +47,8 @@ public static class EnumerableExtensions
         /// <returns>The zero-based index of the last match, or -1 when there is none.</returns>
         public int FindLastIndex(Func<T, bool> predicate)
         {
-            ArgumentNullException.ThrowIfNull(source);
-            ArgumentNullException.ThrowIfNull(predicate);
+            Guard.NotNull(source);
+            Guard.NotNull(predicate);
 
             var last = -1;
             var i = 0;
@@ -70,8 +70,8 @@ public static class EnumerableExtensions
         /// <returns>The zero-based indices in ascending order.</returns>
         public IEnumerable<int> FindIndices(Func<T, bool> predicate)
         {
-            ArgumentNullException.ThrowIfNull(source);
-            ArgumentNullException.ThrowIfNull(predicate);
+            Guard.NotNull(source);
+            Guard.NotNull(predicate);
 
             return Iterate();
 
@@ -99,8 +99,8 @@ public static class EnumerableExtensions
         /// <returns>The leading elements, ending with (or just before) the first match.</returns>
         public IEnumerable<T> TakeUntil(Func<T, bool> predicate, bool inclusive = true)
         {
-            ArgumentNullException.ThrowIfNull(source);
-            ArgumentNullException.ThrowIfNull(predicate);
+            Guard.NotNull(source);
+            Guard.NotNull(predicate);
 
             return Iterate();
 

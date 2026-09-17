@@ -79,7 +79,7 @@ jobs:
           files = z.namelist()
           nuspec = z.read(next(n for n in files if n.endswith(".nuspec"))).decode("utf-8")
           failures = []
-          for tfm in ("net8.0", "net10.0", "net11.0"):
+          for tfm in ("netstandard2.0", "net8.0", "net10.0", "net11.0"):
               for ext in ("dll", "xml"):
                   if f"lib/{tfm}/Aelena.CommonExtensions.{ext}" not in files:
                       failures.append(f"missing lib/{tfm}/Aelena.CommonExtensions.{ext}")

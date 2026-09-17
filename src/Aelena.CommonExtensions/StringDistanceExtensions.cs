@@ -24,8 +24,8 @@ public static class StringDistanceExtensions
         /// <returns>Zero for equal strings; at most the length of the longer string.</returns>
         public int LevenshteinDistance(string other, bool ignoreCase = false)
         {
-            ArgumentNullException.ThrowIfNull(s);
-            ArgumentNullException.ThrowIfNull(other);
+            Guard.NotNull(s);
+            Guard.NotNull(other);
 
             return Distance(s.AsSpan(), other.AsSpan(), ignoreCase);
         }
@@ -46,9 +46,9 @@ public static class StringDistanceExtensions
         /// </returns>
         public IReadOnlyList<(string Value, int Distance)> ClosestTo(string target, int count = 1, bool ignoreCase = false)
         {
-            ArgumentNullException.ThrowIfNull(candidates);
-            ArgumentNullException.ThrowIfNull(target);
-            ArgumentOutOfRangeException.ThrowIfNegative(count);
+            Guard.NotNull(candidates);
+            Guard.NotNull(target);
+            Guard.NotNegative(count);
 
             return count == 0
                 ? []
@@ -71,8 +71,8 @@ public static class StringDistanceExtensions
         /// </returns>
         public IReadOnlyList<(string First, string Second, int Distance)> ClosestPairs(int count = 1, bool ignoreCase = false)
         {
-            ArgumentNullException.ThrowIfNull(candidates);
-            ArgumentOutOfRangeException.ThrowIfNegative(count);
+            Guard.NotNull(candidates);
+            Guard.NotNegative(count);
 
             if (count == 0)
             {

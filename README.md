@@ -3,7 +3,7 @@
 Published on NuGet as [**Common-Extensions**](https://www.nuget.org/packages/Common-Extensions).
 
 [![CI](https://github.com/aelena/useful-extensions/actions/workflows/ci.yml/badge.svg)](https://github.com/aelena/useful-extensions/actions/workflows/ci.yml)
-![.NET 8 | 10 | 11](https://img.shields.io/badge/.NET-8.0%20%7C%2010.0%20%7C%2011.0-512BD4)
+![.NET Standard 2.0 | .NET 8 | 10 | 11](https://img.shields.io/badge/.NET-Standard%202.0%20%7C%208.0%20%7C%2010.0%20%7C%2011.0-512BD4)
 ![C# 14](https://img.shields.io/badge/C%23-14-239120)
 ![Coverage 100%](https://img.shields.io/badge/coverage-100%25%20line%20%7C%20branch%20%7C%20method-brightgreen)
 
@@ -25,7 +25,7 @@ using Aelena.CommonExtensions;
 new[] { 3, 8, 12 }.FindIndex(x => x > 5);            // 1
 naturals.TakeUntil(x => x == 3);                     // 0, 1, 2, 3
 status.In(Status.Draft, Status.Pending);             // true / false
-DateOnly.FromDateTime(DateTime.Today).IsBetween(start, end);
+DateTime.Today.IsBetween(start, end);
 ```
 
 ## Contents
@@ -53,11 +53,14 @@ semantics, and gives them modern signatures:
 - **Ordinal comparison by default**, with an explicit `StringComparison` parameter where it matters.
 - **Lazy iterators that validate eagerly**: a bad argument throws at the call site, not on first enumeration.
 - **Zero allocation where possible**: `params ReadOnlySpan<T>`, `stackalloc`, `string.Concat` over spans.
+- **.NET Standard 2.0 as well as .NET 8, 10 and 11**, so it works on .NET Framework 4.6.2+, Mono and Unity too, with identical behaviour everywhere.
 - **100% line, branch and method coverage**, enforced in CI. See [Building and testing](#building-and-testing). The README examples are themselves part of the test suite.
 
 ## Installing
 
-The package targets `net8.0`, `net10.0` and `net11.0`.
+The package targets `netstandard2.0`, `net8.0`, `net10.0` and `net11.0`. The .NET Standard build is what
+.NET Framework 4.6.2+, .NET Core 2.x through 7, Mono and Unity pick up; it depends on `System.Memory` and
+nothing else. The modern builds have no dependencies at all.
 
 ```shell
 dotnet add package Common-Extensions
@@ -289,6 +292,13 @@ names.ClosestPairs(2);     // [("color", "colour", 1), ("dollar", "collar", 1)]
 
 Both ranking members accept `ignoreCase: true`, and both return an empty list for `count: 0`.
 
+### A note for .NET Standard 2.0 consumers
+
+Everything above behaves the same on every target. The one wrinkle is `StringSplitOptions.TrimEntries`,
+which .NET Standard 2.0 does not declare. `SplitOutside` tests the flag by value, so pass
+`(StringSplitOptions)2` there, or define a constant for it as this repository's tests do. On .NET 5 and
+later use the real enum member.
+
 ## Sequences
 
 ### Index of the first, last or every match
@@ -411,11 +421,13 @@ was unclear or buggy (`Interpolate` always returned an empty string; `AreAllNull
 ## Building and testing
 
 Requirements: the .NET 10 SDK or newer (`global.json` rolls forward to the latest major, including .NET 11
-previews), plus the .NET 8, 10 and 11 runtimes to execute the tests on every target.
+previews), plus the .NET 8, 10 and 11 runtimes to execute the tests on every target. On Windows the test
+project also targets `net48`, which runs the whole suite against the `netstandard2.0` build of the library;
+CI runs on Windows for that reason.
 
 ```shell
 dotnet build
-dotnet test                      # 290 tests x 3 frameworks
+dotnet test                      # 292 tests x 4 frameworks
 pwsh scripts/coverage.ps1        # tests + merged coverage report + 100% gate
 dotnet pack src/Aelena.CommonExtensions/Aelena.CommonExtensions.csproj -c Release
 ```
@@ -438,8 +450,8 @@ and creates a GitHub release with the packages attached.
 ```shell
 # 1. bump <Version> in src/Aelena.CommonExtensions/Aelena.CommonExtensions.csproj and update CHANGELOG.md
 # 2. commit, then:
-git tag v2.1.0
-git push origin v2.1.0
+git tag v2.2.0
+git push origin v2.2.0
 ```
 
 Run the *Release* workflow manually with `dry_run` checked to rehearse everything except the push.
