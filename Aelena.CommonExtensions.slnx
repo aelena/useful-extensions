@@ -1,9 +1,9 @@
 <Solution>
   <Folder Name="/src/">
-    <Project Path="src/Aelena.Extensions/Aelena.Extensions.csproj" />
+    <Project Path="src/Aelena.CommonExtensions/Aelena.CommonExtensions.csproj" />
   </Folder>
   <Folder Name="/tests/">
-    <Project Path="tests/Aelena.Extensions.Tests/Aelena.Extensions.Tests.csproj" />
+    <Project Path="tests/Aelena.CommonExtensions.Tests/Aelena.CommonExtensions.Tests.csproj" />
   </Folder>
   <Folder Name="/Solution Items/">
     <File Path="Directory.Build.props" />

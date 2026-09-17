@@ -2,13 +2,13 @@
 
   <PropertyGroup>
     <TargetFrameworks>net8.0;net10.0;net11.0</TargetFrameworks>
-    <RootNamespace>Aelena.Extensions</RootNamespace>
-    <AssemblyName>Aelena.Extensions</AssemblyName>
+    <RootNamespace>Aelena.CommonExtensions</RootNamespace>
+    <AssemblyName>Aelena.CommonExtensions</AssemblyName>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <IsPackable>true</IsPackable>
-    <!-- The nuget.org package keeps the historical id; assembly and namespace are Aelena.Extensions. -->
+    <!-- The nuget.org package keeps the historical id; assembly and namespace are Aelena.CommonExtensions. -->
     <PackageId>Common-Extensions</PackageId>
-    <Version>2.0.0</Version>
+    <Version>2.0.1</Version>
     <Description>A small, opinionated set of extension methods that fill real gaps in the .NET BCL for strings, sequences and comparable values.</Description>
     <PackageTags>extensions;string;linq;enumerable;utility</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>

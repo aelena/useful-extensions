@@ -4,7 +4,10 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
-## [2.0.0] - 2026-09-17
+## [2.0.1] - 2026-09-17
+
+First published 2.x release. Version 2.0.0 was tagged but never reached nuget.org; it was
+withdrawn before publishing to rename the assembly and namespace to `Aelena.CommonExtensions`.
 
 Complete rewrite for .NET 8, 10 and 11, published under the existing NuGet id `Common-Extensions`
 (previous release: 0.8.0). Earlier versions targeted .NET Framework 4.5;
@@ -25,7 +28,7 @@ nothing in 2.0 is source-compatible with it. See the
 
 ### Changed
 
-- Single namespace `Aelena.Extensions` replaces the three `*.Extensions` classes of 1.x.
+- Single namespace `Aelena.CommonExtensions` replaces the three `*.Extensions` classes of 1.x.
 - All string comparisons default to `StringComparison.Ordinal` (1.x used the current culture).
 - Methods that return `IEnumerable<T>` validate their arguments eagerly and are lazy otherwise.
 
@@ -36,4 +39,4 @@ nothing in 2.0 is source-compatible with it. See the
 - `Interpolate`, `AreAllNull`, `ReplaceWord`, `InsertMultiple` and `ParseToStringSafe`,
   whose behaviour was incorrect or undefined.
 
-[2.0.0]: https://github.com/aelena/useful-extensions/releases/tag/v2.0.0
+[2.0.1]: https://github.com/aelena/useful-extensions/releases/tag/v2.0.1

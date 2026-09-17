@@ -6,7 +6,7 @@
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <RootNamespace>Aelena.Extensions.Tests</RootNamespace>
+    <RootNamespace>Aelena.CommonExtensions.Tests</RootNamespace>
     <NoWarn>$(NoWarn);CS1591;CA1707;CA1861;CA1812;CA1515;CA2007</NoWarn>
   </PropertyGroup>
 
@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../../src/Aelena.Extensions/Aelena.Extensions.csproj" />
+    <ProjectReference Include="../../src/Aelena.CommonExtensions/Aelena.CommonExtensions.csproj" />
   </ItemGroup>
 
   <ItemGroup>

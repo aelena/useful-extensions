@@ -1,4 +1,4 @@
-# Aelena.Extensions
+# Aelena.CommonExtensions
 
 Published on NuGet as [**Common-Extensions**](https://www.nuget.org/packages/Common-Extensions).
 
@@ -12,7 +12,7 @@ Every member fills a gap that the .NET Base Class Library and C# still leave ope
 duplicates something you can already write as a one-liner with the framework.
 
 ```csharp
-using Aelena.Extensions;
+using Aelena.CommonExtensions;
 
 "key=value".After("=");                              // "value"
 "/usr/local/bin".AfterLast('/');                     // "bin"
@@ -62,18 +62,18 @@ The package targets `net8.0`, `net10.0` and `net11.0`.
 dotnet add package Common-Extensions
 ```
 
-The package id is `Common-Extensions` (kept from version 0.8); the assembly and namespace are `Aelena.Extensions`.
+The package id is `Common-Extensions` (kept from version 0.8); the assembly and namespace are `Aelena.CommonExtensions`.
 
 Or reference the project directly:
 
 ```xml
-<ProjectReference Include="path/to/src/Aelena.Extensions/Aelena.Extensions.csproj" />
+<ProjectReference Include="path/to/src/Aelena.CommonExtensions/Aelena.CommonExtensions.csproj" />
 ```
 
 Then bring the namespace into scope, ideally as a global using:
 
 ```csharp
-global using Aelena.Extensions;
+global using Aelena.CommonExtensions;
 ```
 
 ## Design rules
@@ -315,7 +315,7 @@ Strings compare with `string.CompareTo`, which is culture-sensitive. Use ordinal
 ## Migrating from the 1.x library
 
 Version 1 shipped three classes all called `Extensions` in three namespaces. Version 2 has one namespace,
-`Aelena.Extensions`, and everything below was either removed because the framework covers it or renamed because
+`Aelena.CommonExtensions`, and everything below was either removed because the framework covers it or renamed because
 its semantics changed. Methods not listed here were dropped without a direct replacement because their behaviour
 was unclear or buggy (`Interpolate` always returned an empty string; `AreAllNull` actually tested *any* null).
 
@@ -364,7 +364,7 @@ previews), plus the .NET 8, 10 and 11 runtimes to execute the tests on every tar
 dotnet build
 dotnet test                      # 256 tests x 3 frameworks
 pwsh scripts/coverage.ps1        # tests + merged coverage report + 100% gate
-dotnet pack src/Aelena.Extensions/Aelena.Extensions.csproj -c Release
+dotnet pack src/Aelena.CommonExtensions/Aelena.CommonExtensions.csproj -c Release
 ```
 
 Tests use xUnit v3 on the Microsoft.Testing.Platform runner. Coverage is collected with
@@ -383,10 +383,10 @@ the tag matches `<Version>` in the csproj, verifies the package contents, publis
 and creates a GitHub release with the packages attached.
 
 ```shell
-# 1. bump <Version> in src/Aelena.Extensions/Aelena.Extensions.csproj and update CHANGELOG.md
+# 1. bump <Version> in src/Aelena.CommonExtensions/Aelena.CommonExtensions.csproj and update CHANGELOG.md
 # 2. commit, then:
-git tag v2.0.0
-git push origin v2.0.0
+git tag v2.0.1
+git push origin v2.0.1
 ```
 
 Run the *Release* workflow manually with `dry_run` checked to rehearse everything except the push.

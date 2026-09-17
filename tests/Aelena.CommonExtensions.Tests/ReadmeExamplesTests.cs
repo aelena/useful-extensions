@@ -1,4 +1,4 @@
-namespace Aelena.Extensions.Tests;
+namespace Aelena.CommonExtensions.Tests;
 
 /// <summary>
 /// Every code sample in README.md, asserted. If one of these fails, the README is lying.

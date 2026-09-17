@@ -1,4 +1,4 @@
-namespace Aelena.Extensions;
+namespace Aelena.CommonExtensions;
 
 /// <summary>
 /// Extension members that read naturally on any value: set membership and range checks.

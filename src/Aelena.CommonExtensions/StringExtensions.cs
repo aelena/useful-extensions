@@ -1,7 +1,7 @@
 using System.Globalization;
 using System.Text;
 
-namespace Aelena.Extensions;
+namespace Aelena.CommonExtensions;
 
 /// <summary>
 /// Extension members for <see cref="string"/> that fill gaps the BCL still leaves open:

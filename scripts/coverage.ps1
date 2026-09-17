@@ -35,7 +35,7 @@ try {
         -reports:"TestResults/*.cobertura.xml" `
         -targetdir:TestResults/report `
         -reporttypes:"Html;TextSummary;JsonSummary;MarkdownSummaryGithub" `
-        -assemblyfilters:+Aelena.Extensions `
+        -assemblyfilters:+Aelena.CommonExtensions `
         -verbosity:Warning
     if ($LASTEXITCODE -ne 0) {
         exit $LASTEXITCODE

@@ -1,6 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 
-namespace Aelena.Extensions;
+namespace Aelena.CommonExtensions;
 
 /// <summary>
 /// Extension members for <see cref="IEnumerable{T}"/> that LINQ still lacks: predicate-based index lookup,

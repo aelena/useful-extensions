@@ -52,7 +52,7 @@ jobs:
           path: TestResults/report
 
       - name: Pack
-        run: dotnet pack src/Aelena.Extensions/Aelena.Extensions.csproj --no-build -c Release -o artifacts
+        run: dotnet pack src/Aelena.CommonExtensions/Aelena.CommonExtensions.csproj --no-build -c Release -o artifacts
 
       - name: Upload package
         uses: actions/upload-artifact@v7

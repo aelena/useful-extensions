@@ -1,4 +1,4 @@
-namespace Aelena.Extensions.Tests;
+namespace Aelena.CommonExtensions.Tests;
 
 public class StringSlicingTests
 {
