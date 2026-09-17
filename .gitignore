@@ -154,3 +154,14 @@ $RECYCLE.BIN/
 
 # Mac desktop service store files
 .DS_Store
+
+# graft's local graph cache — regenerable, not committed (run `graft build`).
+/graft/
+
+# build and coverage outputs
+/artifacts/
+
+# local agent tooling (graft / Claude Code)
+/.claude/
+/.mcp.json
+/.ignore

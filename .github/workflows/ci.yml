@@ -1,0 +1,54 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  build-test-cover:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up .NET SDKs and runtimes
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            8.0.x
+            10.0.x
+            11.0.x
+          dotnet-quality: preview
+
+      - name: Restore
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --no-restore -c Release
+
+      - name: Test with 100% coverage gate
+        shell: pwsh
+        run: ./scripts/coverage.ps1
+
+      - name: Publish coverage summary
+        if: always()
+        shell: bash
+        run: cat TestResults/report/SummaryGithub.md >> "$GITHUB_STEP_SUMMARY" || true
+
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: TestResults/report
+
+      - name: Pack
+        run: dotnet pack src/Aelena.Extensions/Aelena.Extensions.csproj --no-build -c Release -o artifacts
+
+      - name: Upload package
+        uses: actions/upload-artifact@v4
+        with:
+          name: nuget-package
+          path: artifacts/*.nupkg
