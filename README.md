@@ -661,8 +661,20 @@ CI runs on Windows for that reason.
 dotnet build
 dotnet test                      # 457 tests x 4 frameworks
 pwsh scripts/coverage.ps1        # tests + merged coverage report + 100% gate
+dotnet format --verify-no-changes   # formatting and style, same gate as CI
+pwsh scripts/audit.ps1           # dependency vulnerability audit, same gate as CI
 dotnet pack src/Aelena.CommonExtensions/Aelena.CommonExtensions.csproj -c Release
 ```
+
+CI runs three jobs on every push and pull request, and the release workflow reuses all of them as its gate:
+
+| Job | What it enforces |
+|---|---|
+| `lint` | `dotnet format --verify-no-changes`: whitespace and code-style rules from `.editorconfig`. Analyzers at `latest-recommended` already fail the build itself. |
+| `audit` | `scripts/audit.ps1`: no known vulnerability in any direct or transitive package, deprecated packages reported. Restore also audits every build and fails on moderate severity or worse. |
+| `build-test-cover` | Build on four targets, 100% line, branch and method coverage, pack. |
+
+Dependabot opens weekly pull requests for NuGet packages and GitHub Actions.
 
 Tests use xUnit v3 on the Microsoft.Testing.Platform runner. Coverage is collected with
 `Microsoft.Testing.Extensions.CodeCoverage`, merged across the three frameworks with ReportGenerator
