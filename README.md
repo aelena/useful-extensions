@@ -24,6 +24,9 @@ using Aelena.CommonExtensions;
 
 new[] { 3, 8, 12 }.FindIndex(x => x > 5);            // 1
 naturals.TakeUntil(x => x == 3);                     // 0, 1, 2, 3
+prices.Window(3).Select(w => w.Average());           // moving average
+movements.Scan(0m, (balance, m) => balance + m);     // running balance
+players.TopBy(3, p => p.Score);                      // best three, no full sort
 status.In(Status.Draft, Status.Pending);             // true / false
 DateTime.Today.IsBetween(start, end);
 ```
@@ -395,6 +398,93 @@ lines.TakeUntil(l => l.StartsWith("END"), inclusive: false);   // same as TakeWh
 Naturals().TakeUntil(x => x == 3);                             // 0, 1, 2, 3  (infinite source is fine)
 ```
 
+### Sliding windows and neighbours
+
+`Window(n)` yields every run of `n` consecutive elements, one step at a time; `Pairwise()` is the
+two-element case with a tuple instead of a list. Both are lazy and work on infinite sequences.
+
+```csharp
+var prices = new[] { 1.0, 2, 3, 4, 5 };
+prices.Window(3).Select(w => w.Average());          // 2, 3, 4          (moving average)
+
+var readings = new[] { 10, 12, 15, 11 };
+readings.Pairwise().Select(p => p.Current - p.Previous);   // 2, 3, -4   (deltas)
+readings.Pairwise().All(p => p.Previous <= p.Current);     // false      (is it sorted?)
+```
+
+### Running folds
+
+`Scan` is `Aggregate` that shows its work: it yields the running value after each element. With a seed
+the type can change; without one the first element starts the fold.
+
+```csharp
+var movements = new[] { 100m, -30m, 45m };
+movements.Scan(0m, (balance, m) => balance + m);    // 100, 70, 115     (running balance)
+
+new[] { 3, 1, 7, 2, 9 }.Scan(Math.Max);             // 3, 3, 7, 7, 9    (running maximum)
+new[] { 'a', 'b', 'c' }.Scan("", (acc, c) => acc + c);   // "a", "ab", "abc"
+```
+
+### Interspersing, partitioning and splitting
+
+```csharp
+string.Concat(new[] { "usr", "local", "bin" }.Intersperse("/"));   // "usr/local/bin"
+
+var (evens, odds) = new[] { 1, 2, 3, 4, 5 }.Partition(x => x % 2 == 0);   // [2, 4] and [1, 3, 5], one pass
+
+var lines = new[] { "first paragraph", "continues", "", "second paragraph" };
+lines.SplitOn(string.IsNullOrWhiteSpace);   // [["first paragraph", "continues"], ["second paragraph"]]
+```
+
+`Partition` walks the source once and returns both halves, where `Where` twice would walk it twice.
+`SplitOn` follows `string.Split` rules: separators are dropped, adjacent separators leave an empty group,
+and there is always at least one group.
+
+### Grouping consecutive runs
+
+`GroupBy` collects a key from anywhere in the sequence. `ChunkBy` only merges neighbours, so a key that
+comes back later starts a new run. That is what run-length encoding, "group these sorted log lines by day"
+and "collapse repeated events" all need.
+
+```csharp
+"aaabcc".ChunkBy(c => c).Select(run => $"{run.Items.Count}{run.Key}");   // "3a", "1b", "2c"
+
+sortedEvents.ChunkBy(e => e.Timestamp.Date);   // one group per day, in order, without a dictionary
+```
+
+### Top and bottom N without a full sort
+
+`TopBy` and `BottomBy` keep only `count` elements in memory however long the source is, so they suit
+streams and large files where `OrderByDescending(...).Take(n)` would buffer everything. Ties keep their
+source order.
+
+```csharp
+var players = new[] { ("ann", 70), ("bob", 90), ("cid", 50), ("dee", 90), ("eve", 80) };
+
+players.TopBy(3, p => p.Item2);      // ("bob", 90), ("dee", 90), ("eve", 80)
+players.BottomBy(2, p => p.Item2);   // ("cid", 50), ("ann", 70)
+```
+
+### Full outer join
+
+LINQ's `Join` drops unmatched rows on both sides and `GroupJoin` keeps only the left ones. `FullOuterJoin`
+keeps everything, which is exactly what reconciliation needs: matched pairs, plus what is missing on each
+side, in one pass over the left sequence.
+
+```csharp
+var expected = new[] { "a", "b", "c" };
+var actual   = new[] { "b", "c", "d" };
+
+expected.FullOuterJoin(actual, e => e, a => a);
+// ("a", null)   missing from actual
+// ("b", "b")
+// ("c", "c")
+// (null, "d")   unexpected in actual
+```
+
+Each side is `default` when unmatched, so a `null` check (or `is null` pattern) tells you which side is
+missing. A key with several partners on the right yields one pair per partner, like an inner join would.
+
 ### Null-tolerant emptiness checks
 
 Both accept `null`, never enumerate more than one element, and narrow nullability for the compiler.
@@ -496,7 +586,7 @@ CI runs on Windows for that reason.
 
 ```shell
 dotnet build
-dotnet test                      # 399 tests x 4 frameworks
+dotnet test                      # 438 tests x 4 frameworks
 pwsh scripts/coverage.ps1        # tests + merged coverage report + 100% gate
 dotnet pack src/Aelena.CommonExtensions/Aelena.CommonExtensions.csproj -c Release
 ```

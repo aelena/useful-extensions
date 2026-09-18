@@ -221,6 +221,43 @@ public class ReadmeExamplesTests
     }
 
     [Fact]
+    public void Sequence_operators()
+    {
+        var prices = new[] { 1.0, 2, 3, 4, 5 };
+        Assert.Equal([2, 3, 4], prices.Window(3).Select(w => w.Average()));
+
+        var readings = new[] { 10, 12, 15, 11 };
+        Assert.Equal([2, 3, -4], readings.Pairwise().Select(p => p.Current - p.Previous));
+        Assert.False(readings.Pairwise().All(p => p.Previous <= p.Current));
+
+        var movements = new[] { 100m, -30m, 45m };
+        Assert.Equal([100m, 70m, 115m], movements.Scan(0m, (balance, m) => balance + m));
+        Assert.Equal([3, 3, 7, 7, 9], new[] { 3, 1, 7, 2, 9 }.Scan(Math.Max));
+        Assert.Equal(["a", "ab", "abc"], new[] { 'a', 'b', 'c' }.Scan("", (acc, c) => acc + c));
+
+        Assert.Equal("usr/local/bin", string.Concat(new[] { "usr", "local", "bin" }.Intersperse("/")));
+
+        var (evens, odds) = new[] { 1, 2, 3, 4, 5 }.Partition(x => x % 2 == 0);
+        Assert.Equal([2, 4], evens);
+        Assert.Equal([1, 3, 5], odds);
+
+        var lines = new[] { "first paragraph", "continues", "", "second paragraph" };
+        Assert.Equal([["first paragraph", "continues"], ["second paragraph"]], lines.SplitOn(string.IsNullOrWhiteSpace));
+
+        Assert.Equal(["3a", "1b", "2c"], "aaabcc".ChunkBy(c => c).Select(run => $"{run.Items.Count}{run.Key}"));
+
+        var players = new[] { ("ann", 70), ("bob", 90), ("cid", 50), ("dee", 90), ("eve", 80) };
+        Assert.Equal([("bob", 90), ("dee", 90), ("eve", 80)], players.TopBy(3, p => p.Item2));
+        Assert.Equal([("cid", 50), ("ann", 70)], players.BottomBy(2, p => p.Item2));
+
+        var expected = new[] { "a", "b", "c" };
+        var actual = new[] { "b", "c", "d" };
+        Assert.Equal(
+            [("a", null), ("b", "b"), ("c", "c"), (null, "d")],
+            expected.FullOuterJoin(actual, e => e, a => a));
+    }
+
+    [Fact]
     public void Sequence_index_lookup()
     {
         var scores = new[] { 3, 8, 12, 8 };

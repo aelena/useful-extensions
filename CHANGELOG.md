@@ -15,6 +15,8 @@ All notable changes to this project are documented here. The format follows
 - `StringDistance` and `StringSimilarity` enums; `ClosestTo` and `ClosestPairs` take a `metric`.
 - `MostSimilarTo`: ranks candidates by any similarity score, best first.
 - `ClusterBy`: greedy near-duplicate grouping by a distance threshold or a similarity threshold.
+- Sequence operators: `Window`, `Pairwise`, `Scan` (with and without seed), `Intersperse`, `Partition`,
+  `SplitOn`, `ChunkBy`, `TopBy`, `BottomBy`, `FullOuterJoin`.
 
 ## [2.2.0] - 2026-09-17
 
