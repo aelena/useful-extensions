@@ -34,6 +34,18 @@ internal static class Guard
 #endif
     }
 
+    public static void Positive(int value, [CallerArgumentExpression(nameof(value))] string? parameterName = null)
+    {
+#if NETSTANDARD2_0
+        if (value <= 0)
+        {
+            throw new ArgumentOutOfRangeException(parameterName, value, "The value must be positive.");
+        }
+#else
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(value, parameterName);
+#endif
+    }
+
     public static void NotNegative(int value, [CallerArgumentExpression(nameof(value))] string? parameterName = null)
     {
 #if NETSTANDARD2_0

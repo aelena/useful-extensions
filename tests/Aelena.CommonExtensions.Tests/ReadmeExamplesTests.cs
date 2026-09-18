@@ -183,6 +183,44 @@ public class ReadmeExamplesTests
     }
 
     [Fact]
+    public void Fuzzy_matching_metrics()
+    {
+        Assert.Equal(2, "recieve".LevenshteinDistance("receive"));
+        Assert.Equal(1, "recieve".DamerauLevenshteinDistance("receive"));
+        Assert.Equal(3, "karolin".HammingDistance("kathrin"));
+        Assert.Equal(3, "ca".DamerauLevenshteinDistance("abc"));
+
+        Assert.Equal(0.9444, "MARTHA".JaroSimilarity("MARHTA"), 4);
+        Assert.Equal(0.9611, "MARTHA".JaroWinklerSimilarity("MARHTA"), 4);
+        Assert.Equal(0.84, "DWAYNE".JaroWinklerSimilarity("DUANE"), 4);
+        Assert.Equal(0.5714, "kitten".LevenshteinSimilarity("sitting"), 4);
+        Assert.Equal(0.25, "night".DiceSimilarity("nacht"), 4);
+        Assert.Equal(0.1429, "night".JaccardSimilarity("nacht"), 4);
+        Assert.Equal(0.6154, "ABCBDAB".LongestCommonSubsequenceSimilarity("BDCABA"), 4);
+
+        Assert.Equal(4, "ABCBDAB".LongestCommonSubsequenceLength("BDCABA"));
+        Assert.Equal(" quick brown ", "the quick brown fox".LongestCommonSubstring("a quick brown dog"));
+        Assert.Equal(["ab", "bc", "cd"], "abcd".NGrams(2));
+
+        Assert.Equal([("receive", 2)], new[] { "receive", "deceive" }.ClosestTo("recieve"));
+        Assert.Equal([("receive", 1)], new[] { "receive", "deceive" }.ClosestTo("recieve", metric: StringDistance.DamerauLevenshtein));
+
+        var names = new[] { "DWAYNE", "MARHTA", "MARTHA", "DUANE" };
+        var top = names.MostSimilarTo("MARTHA", 2);
+        Assert.Equal(["MARTHA", "MARHTA"], top.Select(p => p.Value));
+        Assert.Equal(1.0, top[0].Similarity, 4);
+        Assert.Equal(0.9611, top[1].Similarity, 4);
+
+        var words = new[] { "color", "colour", "dollar", "collar", "xyz" };
+        Assert.Equal([["color", "colour"], ["dollar", "collar"], ["xyz"]], words.ClusterBy(maxDistance: 1));
+        Assert.Equal([["recieve"], ["receive"]], new[] { "recieve", "receive" }.ClusterBy(1));
+        Assert.Equal([["recieve", "receive"]], new[] { "recieve", "receive" }.ClusterBy(1, StringDistance.DamerauLevenshtein));
+
+        var people = new[] { "MARTHA", "MARHTA", "DWAYNE", "DUANE" };
+        Assert.Equal([["MARTHA", "MARHTA"], ["DWAYNE", "DUANE"]], people.ClusterBy(minSimilarity: 0.8));
+    }
+
+    [Fact]
     public void Sequence_index_lookup()
     {
         var scores = new[] { 3, 8, 12, 8 };

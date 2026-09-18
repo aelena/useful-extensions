@@ -4,6 +4,18 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [2.3.0] - 2026-09-18
+
+### Added
+
+- Edit distances: `DamerauLevenshteinDistance` (optimal string alignment) and `HammingDistance`.
+- Shared text: `LongestCommonSubsequenceLength`, `LongestCommonSubstring`, `NGrams`.
+- Similarity scores from 0 to 1: `JaroSimilarity`, `JaroWinklerSimilarity`, `LevenshteinSimilarity`,
+  `LongestCommonSubsequenceSimilarity`, `DiceSimilarity`, `JaccardSimilarity`.
+- `StringDistance` and `StringSimilarity` enums; `ClosestTo` and `ClosestPairs` take a `metric`.
+- `MostSimilarTo`: ranks candidates by any similarity score, best first.
+- `ClusterBy`: greedy near-duplicate grouping by a distance threshold or a similarity threshold.
+
 ## [2.2.0] - 2026-09-17
 
 ### Added
@@ -66,6 +78,7 @@ nothing in 2.0 is source-compatible with it. See the
 - `Interpolate`, `AreAllNull`, `ReplaceWord`, `InsertMultiple` and `ParseToStringSafe`,
   whose behaviour was incorrect or undefined.
 
+[2.3.0]: https://github.com/aelena/useful-extensions/releases/tag/v2.3.0
 [2.2.0]: https://github.com/aelena/useful-extensions/releases/tag/v2.2.0
 [2.1.0]: https://github.com/aelena/useful-extensions/releases/tag/v2.1.0
 [2.0.2]: https://github.com/aelena/useful-extensions/releases/tag/v2.0.2

@@ -242,34 +242,81 @@ use a CSV library.
 
 ## Fuzzy matching
 
-### Levenshtein distance
+Two families of metrics, both case-sensitive unless you pass `ignoreCase: true`:
 
-The number of single-character insertions, deletions and substitutions needed to turn one string into
-the other. Symmetric, zero for equal strings, never more than the longer length. Runs in O(n·m) with a
-stack-allocated buffer for typical string sizes.
+| Kind | Members | Range | Read as |
+|---|---|---|---|
+| Distance | `LevenshteinDistance`, `DamerauLevenshteinDistance`, `HammingDistance` | integer edits | lower is closer |
+| Similarity | `JaroWinklerSimilarity`, `JaroSimilarity`, `LevenshteinSimilarity`, `LongestCommonSubsequenceSimilarity`, `DiceSimilarity`, `JaccardSimilarity` | 0 to 1 | higher is closer |
+
+Plus the building blocks `LongestCommonSubsequenceLength`, `LongestCommonSubstring` and `NGrams`, and the
+collection rankings `ClosestTo`, `MostSimilarTo`, `ClosestPairs` and `ClusterBy`, which take any metric.
+
+### Which metric?
+
+- **Typos in words**: `DamerauLevenshtein`. A swapped pair of letters is the most common typing error and it
+  costs 1 instead of 2.
+- **Names, logins, short identifiers**: `JaroWinkler`. Rewards a shared start and tolerates length differences.
+- **Titles, addresses, anything with reordered words**: `Dice` or `Jaccard` over bigrams. Order-insensitive.
+- **Fixed-width codes** (hashes, ISBNs, DNA): `Hamming`. Only defined for equal lengths.
+- **Diff-like "how much is shared"**: `LongestCommonSubsequence`.
+
+### Edit distances
 
 ```csharp
-"kitten".LevenshteinDistance("sitting");                   // 3
-"flaw".LevenshteinDistance("lawn");                        // 2
-"colour".LevenshteinDistance("color");                     // 1
-"Kitten".LevenshteinDistance("kitten");                    // 1
+"kitten".LevenshteinDistance("sitting");             // 3
+"recieve".LevenshteinDistance("receive");            // 2   (two substitutions)
+"recieve".DamerauLevenshteinDistance("receive");     // 1   (one transposition)
+"karolin".HammingDistance("kathrin");                // 3
 "Kitten".LevenshteinDistance("kitten", ignoreCase: true);  // 0
+```
+
+`DamerauLevenshteinDistance` is the optimal string alignment variant: a transposed pair is not edited again,
+so `"ca"` to `"abc"` is 3, not 2. `HammingDistance` throws `ArgumentException` for strings of different length.
+
+### Similarity scores
+
+```csharp
+"MARTHA".JaroSimilarity("MARHTA");                   // 0.9444
+"MARTHA".JaroWinklerSimilarity("MARHTA");            // 0.9611  (bonus for the shared "MAR")
+"DWAYNE".JaroWinklerSimilarity("DUANE");             // 0.84
+"kitten".LevenshteinSimilarity("sitting");           // 0.5714  (1 - 3/7)
+"night".DiceSimilarity("nacht");                     // 0.25    (bigrams ni ig gh ht vs na ac ch ht)
+"night".JaccardSimilarity("nacht");                  // 0.1429
+"ABCBDAB".LongestCommonSubsequenceSimilarity("BDCABA");  // 0.6154
+```
+
+Two empty strings score 1 everywhere. `JaroWinklerSimilarity` takes a `prefixScale` (default 0.1, maximum
+0.25). `DiceSimilarity` and `JaccardSimilarity` take the n-gram `size` (default 2).
+
+### Shared text
+
+```csharp
+"ABCBDAB".LongestCommonSubsequenceLength("BDCABA");  // 4   ("BCBA", not necessarily adjacent)
+"the quick brown fox".LongestCommonSubstring("a quick brown dog");  // " quick brown "
+"abcd".NGrams(2);                                    // "ab", "bc", "cd"   (lazy)
 ```
 
 ### Closest candidates to a target
 
-Ranks a collection against a target, best match first. Ties keep their source order, so a stable input
-gives a stable answer. Useful for "did you mean" suggestions, matching user input to a known list of
-commands, or reconciling slightly different spellings.
+`ClosestTo` ranks by a distance, best first; `MostSimilarTo` ranks by a similarity, best first. Both are
+stable, so ties keep their source order, and both return the score next to each value so callers can apply a
+cutoff.
 
 ```csharp
 var words = new[] { "cooler", "dollar", "collar", "colour" };
 
 words.ClosestTo("color");       // [("colour", 1)]
 words.ClosestTo("color", 3);    // [("colour", 1), ("cooler", 2), ("collar", 2)]
+
+new[] { "receive", "deceive" }.ClosestTo("recieve");                                          // [("receive", 2)]
+new[] { "receive", "deceive" }.ClosestTo("recieve", metric: StringDistance.DamerauLevenshtein); // [("receive", 1)]
+
+var names = new[] { "DWAYNE", "MARHTA", "MARTHA", "DUANE" };
+names.MostSimilarTo("MARTHA", 2);   // [("MARTHA", 1.0), ("MARHTA", 0.9611)]
 ```
 
-`ClosestTo` returns `(string Value, int Distance)` pairs, so the caller can apply a cutoff:
+The "did you mean" idiom, with a list pattern as the cutoff:
 
 ```csharp
 var suggestion = commands.ClosestTo(input) is [{ Distance: <= 2 } best]
@@ -281,7 +328,6 @@ var suggestion = commands.ClosestTo(input) is [{ Distance: <= 2 } best]
 
 Measures every unordered pair and returns the nearest ones, best pair first. This is O(n²) in the number
 of strings, which is fine for hundreds of items and worth thinking about for hundreds of thousands.
-Handy for spotting near-duplicates in a list of names, tags or file names.
 
 ```csharp
 var names = new[] { "color", "colour", "dollar", "collar" };
@@ -289,6 +335,29 @@ var names = new[] { "color", "colour", "dollar", "collar" };
 names.ClosestPairs();      // [("color", "colour", 1)]
 names.ClosestPairs(2);     // [("color", "colour", 1), ("dollar", "collar", 1)]
 ```
+
+### Clustering near-duplicates
+
+`ClusterBy` walks the collection once: each string joins the first existing cluster whose founding member is
+close enough, or founds a new cluster. Every string lands in exactly one cluster and order is preserved, which
+makes it the natural tool for deduplicating tags, names or file names before a human looks at them.
+
+```csharp
+var words = new[] { "color", "colour", "dollar", "collar", "xyz" };
+
+words.ClusterBy(maxDistance: 1);
+// [["color", "colour"], ["dollar", "collar"], ["xyz"]]
+
+new[] { "recieve", "receive" }.ClusterBy(1);                                     // [["recieve"], ["receive"]]
+new[] { "recieve", "receive" }.ClusterBy(1, StringDistance.DamerauLevenshtein);  // [["recieve", "receive"]]
+
+var people = new[] { "MARTHA", "MARHTA", "DWAYNE", "DUANE" };
+people.ClusterBy(minSimilarity: 0.8);   // [["MARTHA", "MARHTA"], ["DWAYNE", "DUANE"]]  (Jaro-Winkler)
+```
+
+Because the pass is greedy, the founding member decides membership: a string two edits from the founder does
+not join a `maxDistance: 1` cluster even if it is one edit from a later member. That keeps the result
+predictable and linear in the number of clusters.
 
 Both ranking members accept `ignoreCase: true`, and both return an empty list for `count: 0`.
 
@@ -427,7 +496,7 @@ CI runs on Windows for that reason.
 
 ```shell
 dotnet build
-dotnet test                      # 292 tests x 4 frameworks
+dotnet test                      # 399 tests x 4 frameworks
 pwsh scripts/coverage.ps1        # tests + merged coverage report + 100% gate
 dotnet pack src/Aelena.CommonExtensions/Aelena.CommonExtensions.csproj -c Release
 ```
@@ -450,8 +519,8 @@ and creates a GitHub release with the packages attached.
 ```shell
 # 1. bump <Version> in src/Aelena.CommonExtensions/Aelena.CommonExtensions.csproj and update CHANGELOG.md
 # 2. commit, then:
-git tag v2.2.0
-git push origin v2.2.0
+git tag v2.3.0
+git push origin v2.3.0
 ```
 
 Run the *Release* workflow manually with `dry_run` checked to rehearse everything except the push.
