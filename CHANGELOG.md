@@ -4,6 +4,14 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [2.3.1] - 2026-09-18
+
+### Added
+
+- Functional helpers: `Pipe`, `Tap`, `TryPipe` on any value; `Try` and `Memoize` on `Func<TResult>`;
+  `Memoize` on `Func<T, TResult>` (with optional comparer) and `Func<T1, T2, TResult>`.
+- README badges for NuGet version and downloads, license, test count and release.
+
 ## [2.3.0] - 2026-09-18
 
 ### Added
@@ -80,6 +88,7 @@ nothing in 2.0 is source-compatible with it. See the
 - `Interpolate`, `AreAllNull`, `ReplaceWord`, `InsertMultiple` and `ParseToStringSafe`,
   whose behaviour was incorrect or undefined.
 
+[2.3.1]: https://github.com/aelena/useful-extensions/releases/tag/v2.3.1
 [2.3.0]: https://github.com/aelena/useful-extensions/releases/tag/v2.3.0
 [2.2.0]: https://github.com/aelena/useful-extensions/releases/tag/v2.2.0
 [2.1.0]: https://github.com/aelena/useful-extensions/releases/tag/v2.1.0

@@ -258,6 +258,64 @@ public class ReadmeExamplesTests
     }
 
     [Fact]
+    public void Functional_helpers()
+    {
+        var log = new List<int>();
+        var total = "  42 "
+            .Pipe(s => s.Trim())
+            .Pipe(s => int.Parse(s, System.Globalization.CultureInfo.InvariantCulture))
+            .Tap(log.Add)
+            .Pipe(n => n * 2);
+        Assert.Equal(84, total);
+        Assert.Equal([42], log);
+
+        Assert.Equal((true, 42, null), "42".TryPipe(s => int.Parse(s, System.Globalization.CultureInfo.InvariantCulture)));
+        var (failedSuccess, failedValue, failedError) = "x".TryPipe(s => int.Parse(s, System.Globalization.CultureInfo.InvariantCulture));
+        Assert.False(failedSuccess);
+        Assert.Equal(0, failedValue);
+        Assert.IsType<FormatException>(failedError);
+
+        static string Describe(string input)
+        {
+            return input.TryPipe(s => int.Parse(s, System.Globalization.CultureInfo.InvariantCulture)) switch
+            {
+                (true, var n, _) => $"number {n}",
+                (false, _, var e) => $"failed: {e!.GetType().Name}",
+            };
+        }
+        Assert.Equal("number 7", Describe("7"));
+        Assert.Equal("failed: FormatException", Describe("seven"));
+
+        Func<string> read = () => "contents";
+        Assert.True(read.Try() is (true, "contents", _));
+
+        Func<int, long> fib = null!;
+        fib = new Func<int, long>(n => n < 2 ? n : fib(n - 1) + fib(n - 2)).Memoize();
+        Assert.Equal(23416728348467685L, fib(80));
+
+        var calls = 0;
+        Func<string, int> lookup = code =>
+        {
+            calls++;
+            return code.Length;
+        };
+        var cached = lookup.Memoize(StringComparer.OrdinalIgnoreCase);
+        Assert.Equal(3, cached("abc"));
+        Assert.Equal(3, cached("ABC"));
+        Assert.Equal(1, calls);
+
+        Func<string, int, decimal> price = (sku, qty) => qty * (sku.Length + 0.5m);
+        var cachedPrice = price.Memoize();
+        Assert.Equal(cachedPrice("ab", 2), cachedPrice("ab", 2));
+
+        var loads = 0;
+        Func<int> settings = () => ++loads;
+        var once = settings.Memoize();
+        Assert.Equal(1, once());
+        Assert.Equal(1, once());
+    }
+
+    [Fact]
     public void Sequence_index_lookup()
     {
         var scores = new[] { 3, 8, 12, 8 };

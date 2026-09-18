@@ -3,9 +3,14 @@
 Published on NuGet as [**Common-Extensions**](https://www.nuget.org/packages/Common-Extensions).
 
 [![CI](https://github.com/aelena/useful-extensions/actions/workflows/ci.yml/badge.svg)](https://github.com/aelena/useful-extensions/actions/workflows/ci.yml)
-![.NET Standard 2.0 | .NET 8 | 10 | 11](https://img.shields.io/badge/.NET-Standard%202.0%20%7C%208.0%20%7C%2010.0%20%7C%2011.0-512BD4)
+[![NuGet](https://img.shields.io/nuget/v/Common-Extensions?logo=nuget&label=NuGet)](https://www.nuget.org/packages/Common-Extensions)
+[![NuGet downloads](https://img.shields.io/nuget/dt/Common-Extensions?logo=nuget&label=downloads)](https://www.nuget.org/packages/Common-Extensions)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+![.NET Standard 2.0 | .NET 8 | 10 | 11](https://img.shields.io/badge/.NET-Standard%202.0%20%7C%208.0%20%7C%2010.0%20%7C%2011.0-512BD4?logo=dotnet)
 ![C# 14](https://img.shields.io/badge/C%23-14-239120)
+![Tests](https://img.shields.io/badge/tests-457%20%C3%97%204%20targets-brightgreen)
 ![Coverage 100%](https://img.shields.io/badge/coverage-100%25%20line%20%7C%20branch%20%7C%20method-brightgreen)
+[![Release](https://img.shields.io/github/v/release/aelena/useful-extensions?label=release)](https://github.com/aelena/useful-extensions/releases)
 
 A small, opinionated set of extension members for `string`, `IEnumerable<T>` and comparable values.
 Every member fills a gap that the .NET Base Class Library and C# still leave open in 2026. Nothing here
@@ -29,6 +34,8 @@ movements.Scan(0m, (balance, m) => balance + m);     // running balance
 players.TopBy(3, p => p.Score);                      // best three, no full sort
 status.In(Status.Draft, Status.Pending);             // true / false
 DateTime.Today.IsBetween(start, end);
+input.Pipe(Parse).Tap(Log).Pipe(Validate);           // left-to-right chain
+"42".TryPipe(int.Parse);                             // (true, 42, null): no try/catch
 ```
 
 ## Contents
@@ -40,6 +47,7 @@ DateTime.Today.IsBetween(start, end);
 - [Fuzzy matching](#fuzzy-matching)
 - [Sequences](#sequences)
 - [Values](#values)
+- [Functional helpers](#functional-helpers)
 - [Migrating from the 1.x library](#migrating-from-the-1x-library)
 - [Building and testing](#building-and-testing)
 
@@ -534,6 +542,71 @@ today.IsBetween(quarterStart, quarterEnd);
 
 Strings compare with `string.CompareTo`, which is culture-sensitive. Use ordinal comparison directly when that matters.
 
+## Functional helpers
+
+No new types: these are plain extension members over values and delegates, and anything that can fail
+comes back as a tuple. They compose with pattern matching and deconstruction and never compete with a
+`Result` or `Option` type you may already use.
+
+### Pipe and Tap
+
+`Pipe` turns `Validate(Normalize(Parse(text)))` into a chain that reads in the order it runs. `Tap` runs a
+side effect and hands the same value on, so logging or an assertion can sit in the middle of the chain.
+
+```csharp
+var total = "  42 "
+    .Pipe(s => s.Trim())
+    .Pipe(int.Parse)
+    .Tap(n => logger.LogDebug("parsed {N}", n))
+    .Pipe(n => n * 2);                       // 84
+
+var order = LoadOrder(id).Tap(Validate).Tap(Audit);   // returns the order, ran both side effects
+```
+
+### Try and TryPipe
+
+Turn an exception into a value at a boundary, then decide with a pattern instead of a `try`/`catch` block.
+
+```csharp
+"42".TryPipe(int.Parse);                     // (Success: true,  Value: 42, Error: null)
+"x".TryPipe(int.Parse);                      // (Success: false, Value: 0,  Error: FormatException)
+
+var message = input.TryPipe(int.Parse) switch
+{
+    (true, var n, _) => $"number {n}",
+    (false, _, var e) => $"failed: {e!.GetType().Name}",
+};
+
+Func<string> read = () => File.ReadAllText(path);
+if (read.Try() is (true, var text, _)) { /* use text */ }
+```
+
+Every exception is caught and returned, on purpose: the caller asked for a value, not a throw.
+
+### Memoize
+
+Wrap a pure, expensive function once and call the wrapper freely. Results are cached per distinct argument
+(or per pair of arguments), the cache is thread-safe and lives as long as the wrapper, and a call that
+throws is not cached so it will be retried.
+
+```csharp
+Func<int, long> fib = null!;
+fib = new Func<int, long>(n => n < 2 ? n : fib(n - 1) + fib(n - 2)).Memoize();
+fib(80);                                     // 23416728348467685, in microseconds instead of centuries
+
+Func<string, int> lookup = code => ExpensiveLookup(code);
+var cached = lookup.Memoize(StringComparer.OrdinalIgnoreCase);   // "abc" and "ABC" share one entry
+
+Func<string, int, decimal> price = (sku, qty) => Quote(sku, qty);
+var cachedPrice = price.Memoize();          // keyed on the (sku, qty) pair
+
+Func<Settings> settings = () => LoadSettings();
+var once = settings.Memoize();               // computed on first call, then reused
+```
+
+The cache is unbounded: use it for functions with a finite, reasonably small input space, not for
+arbitrary user input.
+
 ## Migrating from the 1.x library
 
 Version 1 shipped three classes all called `Extensions` in three namespaces. Version 2 has one namespace,
@@ -586,7 +659,7 @@ CI runs on Windows for that reason.
 
 ```shell
 dotnet build
-dotnet test                      # 438 tests x 4 frameworks
+dotnet test                      # 457 tests x 4 frameworks
 pwsh scripts/coverage.ps1        # tests + merged coverage report + 100% gate
 dotnet pack src/Aelena.CommonExtensions/Aelena.CommonExtensions.csproj -c Release
 ```
@@ -609,8 +682,8 @@ and creates a GitHub release with the packages attached.
 ```shell
 # 1. bump <Version> in src/Aelena.CommonExtensions/Aelena.CommonExtensions.csproj and update CHANGELOG.md
 # 2. commit, then:
-git tag v2.3.0
-git push origin v2.3.0
+git tag v2.3.1
+git push origin v2.3.1
 ```
 
 Run the *Release* workflow manually with `dry_run` checked to rehearse everything except the push.
