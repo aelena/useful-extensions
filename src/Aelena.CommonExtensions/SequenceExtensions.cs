@@ -31,18 +31,18 @@ public static class SequenceExtensions
 
             IEnumerable<IReadOnlyList<T>> Iterate()
             {
-                var window = new List<T>(size + 1);
+                var window = new Queue<T>(size + 1);
                 foreach (var item in source)
                 {
-                    window.Add(item);
+                    window.Enqueue(item);
                     if (window.Count > size)
                     {
-                        window.RemoveAt(0);
+                        window.Dequeue();
                     }
 
                     if (window.Count == size)
                     {
-                        yield return window.ToArray();
+                        yield return [.. window];
                     }
                 }
             }

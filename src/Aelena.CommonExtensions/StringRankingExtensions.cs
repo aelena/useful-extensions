@@ -79,22 +79,12 @@ public static class StringRankingExtensions
             Guard.NotNull(candidates);
             Guard.NotNegative(count);
 
-            if (count == 0)
-            {
-                return [];
-            }
-
-            var items = candidates.ToArray();
-            var pairs = new List<(string First, string Second, int Distance)>(items.Length * (items.Length - 1) / 2);
-            for (var i = 0; i < items.Length; i++)
-            {
-                for (var j = i + 1; j < items.Length; j++)
-                {
-                    pairs.Add((items[i], items[j], Measure(items[i], items[j], metric, ignoreCase)));
-                }
-            }
-
-            return [.. pairs.OrderBy(pair => pair.Distance).Take(count)];
+            return count == 0
+                ? []
+                : [.. UnorderedPairs(candidates.ToArray())
+                    .Select(pair => (pair.First, pair.Second, Distance: Measure(pair.First, pair.Second, metric, ignoreCase)))
+                    .OrderBy(pair => pair.Distance)
+                    .Take(count)];
         }
 
         /// <summary>
@@ -156,6 +146,10 @@ public static class StringRankingExtensions
 
         return clusters;
     }
+
+    /// <summary>Every (earlier, later) pair of the array, in source order.</summary>
+    private static IEnumerable<(string First, string Second)> UnorderedPairs(string[] items)
+        => items.SelectMany((first, i) => items.Skip(i + 1).Select(second => (first, second)));
 
     private static int Measure(string a, string b, StringDistance metric, bool ignoreCase) => metric switch
     {

@@ -28,8 +28,7 @@ public static class StringExtensions
             Guard.NotNull(s);
             Guard.NotNullOrEmpty(marker);
 
-            var i = s.IndexOf(marker, comparison);
-            return i < 0 ? s : s[(i + marker.Length)..];
+            return SkipTo(s, s.IndexOf(marker, comparison), marker.Length);
         }
 
         /// <summary>Returns the part of the string that follows the first occurrence of <paramref name="marker"/>.</summary>
@@ -39,8 +38,7 @@ public static class StringExtensions
         {
             Guard.NotNull(s);
 
-            var i = s.IndexOf(marker);
-            return i < 0 ? s : s[(i + 1)..];
+            return SkipTo(s, s.IndexOf(marker), 1);
         }
 
         /// <summary>Returns the part of the string that follows the last occurrence of <paramref name="marker"/>.</summary>
@@ -52,8 +50,7 @@ public static class StringExtensions
             Guard.NotNull(s);
             Guard.NotNullOrEmpty(marker);
 
-            var i = s.LastIndexOf(marker, comparison);
-            return i < 0 ? s : s[(i + marker.Length)..];
+            return SkipTo(s, s.LastIndexOf(marker, comparison), marker.Length);
         }
 
         /// <summary>Returns the part of the string that follows the last occurrence of <paramref name="marker"/>.</summary>
@@ -63,8 +60,7 @@ public static class StringExtensions
         {
             Guard.NotNull(s);
 
-            var i = s.LastIndexOf(marker);
-            return i < 0 ? s : s[(i + 1)..];
+            return SkipTo(s, s.LastIndexOf(marker), 1);
         }
 
         /// <summary>Returns the part of the string that precedes the first occurrence of <paramref name="marker"/>.</summary>
@@ -76,8 +72,7 @@ public static class StringExtensions
             Guard.NotNull(s);
             Guard.NotNullOrEmpty(marker);
 
-            var i = s.IndexOf(marker, comparison);
-            return i < 0 ? s : s[..i];
+            return Until(s, s.IndexOf(marker, comparison));
         }
 
         /// <summary>Returns the part of the string that precedes the first occurrence of <paramref name="marker"/>.</summary>
@@ -87,8 +82,7 @@ public static class StringExtensions
         {
             Guard.NotNull(s);
 
-            var i = s.IndexOf(marker);
-            return i < 0 ? s : s[..i];
+            return Until(s, s.IndexOf(marker));
         }
 
         /// <summary>Returns the part of the string that precedes the last occurrence of <paramref name="marker"/>.</summary>
@@ -100,8 +94,7 @@ public static class StringExtensions
             Guard.NotNull(s);
             Guard.NotNullOrEmpty(marker);
 
-            var i = s.LastIndexOf(marker, comparison);
-            return i < 0 ? s : s[..i];
+            return Until(s, s.LastIndexOf(marker, comparison));
         }
 
         /// <summary>Returns the part of the string that precedes the last occurrence of <paramref name="marker"/>.</summary>
@@ -111,8 +104,7 @@ public static class StringExtensions
         {
             Guard.NotNull(s);
 
-            var i = s.LastIndexOf(marker);
-            return i < 0 ? s : s[..i];
+            return Until(s, s.LastIndexOf(marker));
         }
 
         /// <summary>
@@ -124,21 +116,7 @@ public static class StringExtensions
         /// <param name="comparison">How the markers are matched.</param>
         /// <returns>The enclosed text, or <see cref="string.Empty"/> when either marker is missing.</returns>
         public string Between(string start, string end, StringComparison comparison = StringComparison.Ordinal)
-        {
-            Guard.NotNull(s);
-            Guard.NotNullOrEmpty(start);
-            Guard.NotNullOrEmpty(end);
-
-            var i = s.IndexOf(start, comparison);
-            if (i < 0)
-            {
-                return string.Empty;
-            }
-
-            i += start.Length;
-            var j = s.IndexOf(end, i, comparison);
-            return j < 0 ? string.Empty : s[i..j];
-        }
+            => s.AllBetween(start, end, comparison).FirstOrDefault() ?? string.Empty;
 
         /// <summary>
         /// Lazily returns every non-overlapping piece of text enclosed by <paramref name="start"/> and <paramref name="end"/>,
@@ -243,13 +221,7 @@ public static class StringExtensions
             Guard.NotNull(s);
             Guard.NotNull(values);
 
-            var result = s;
-            foreach (var value in values)
-            {
-                result = Compat.Replace(result, value, string.Empty, comparison);
-            }
-
-            return result;
+            return values.Aggregate(s, (result, value) => Compat.Replace(result, value, string.Empty, comparison));
         }
 
         // ------------------------------------------------------------------ sizing
@@ -382,46 +354,21 @@ public static class StringExtensions
         /// <summary>Tells whether the string contains at least one of the given values.</summary>
         /// <param name="values">The candidates to look for.</param>
         /// <returns><see langword="true"/> when any candidate is found.</returns>
-        public bool ContainsAny(params ReadOnlySpan<string> values) => s.ContainsAny(StringComparison.Ordinal, values);
+        public bool ContainsAny(params ReadOnlySpan<string> values) => s.FirstContained(StringComparison.Ordinal, values) is not null;
 
         /// <summary>Tells whether the string contains at least one of the given values.</summary>
         /// <param name="comparison">How the candidates are matched.</param>
         /// <param name="values">The candidates to look for.</param>
         /// <returns><see langword="true"/> when any candidate is found.</returns>
         public bool ContainsAny(StringComparison comparison, params ReadOnlySpan<string> values)
-        {
-            Guard.NotNull(s);
-
-            foreach (var value in values)
-            {
-                if (Compat.Contains(s, value, comparison))
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
+            => s.FirstContained(comparison, values) is not null;
 
         /// <summary>Tells whether the string contains at least one of the given values.</summary>
         /// <param name="values">The candidates to look for.</param>
         /// <param name="comparison">How the candidates are matched.</param>
         /// <returns><see langword="true"/> when any candidate is found.</returns>
         public bool ContainsAny(IEnumerable<string> values, StringComparison comparison = StringComparison.Ordinal)
-        {
-            Guard.NotNull(s);
-            Guard.NotNull(values);
-
-            foreach (var value in values)
-            {
-                if (Compat.Contains(s, value, comparison))
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
+            => s.FirstContained(values, comparison) is not null;
 
         /// <summary>Returns the first of the given values that the string contains.</summary>
         /// <param name="values">The candidates to look for, in priority order.</param>
@@ -456,15 +403,7 @@ public static class StringExtensions
             Guard.NotNull(s);
             Guard.NotNull(values);
 
-            foreach (var value in values)
-            {
-                if (Compat.Contains(s, value, comparison))
-                {
-                    return value;
-                }
-            }
-
-            return null;
+            return values.FirstOrDefault(value => Compat.Contains(s, value, comparison));
         }
 
         // ------------------------------------------------------------------ splitting
@@ -557,7 +496,7 @@ public static class StringExtensions
                         continue;
                     }
 
-                    if (TryPrepare(s.AsSpan(tokenStart, i - tokenStart), out var token))
+                    if (Prepare(s.AsSpan(tokenStart, i - tokenStart)) is { } token)
                     {
                         yield return token;
                     }
@@ -566,7 +505,7 @@ public static class StringExtensions
                     tokenStart = i;
                 }
 
-                if (TryPrepare(s.AsSpan(tokenStart), out var last))
+                if (Prepare(s.AsSpan(tokenStart)) is { } last)
                 {
                     yield return last;
                 }
@@ -599,22 +538,17 @@ public static class StringExtensions
                 return null;
             }
 
-            bool TryPrepare(ReadOnlySpan<char> raw, out string token)
+            string? Prepare(ReadOnlySpan<char> raw)
             {
-                if ((options & Compat.TrimEntries) != 0)
-                {
-                    raw = raw.Trim();
-                }
-
-                if (raw.IsEmpty && (options & StringSplitOptions.RemoveEmptyEntries) != 0)
-                {
-                    token = string.Empty;
-                    return false;
-                }
-
-                token = raw.ToString();
-                return true;
+                var entry = (options & Compat.TrimEntries) != 0 ? raw.Trim() : raw;
+                return entry.IsEmpty && (options & StringSplitOptions.RemoveEmptyEntries) != 0 ? null : entry.ToString();
             }
         }
     }
+
+    /// <summary>Everything after <paramref name="index"/> plus <paramref name="length"/>, or the whole string when the index is negative.</summary>
+    private static string SkipTo(string s, int index, int length) => index < 0 ? s : s[(index + length)..];
+
+    /// <summary>Everything before <paramref name="index"/>, or the whole string when the index is negative.</summary>
+    private static string Until(string s, int index) => index < 0 ? s : s[..index];
 }

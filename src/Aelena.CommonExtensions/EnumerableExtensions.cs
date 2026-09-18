@@ -28,42 +28,14 @@ public static class EnumerableExtensions
             Guard.NotNull(predicate);
             Guard.NotNegative(startIndex);
 
-            var i = 0;
-            foreach (var item in source)
-            {
-                if (i >= startIndex && predicate(item))
-                {
-                    return i;
-                }
-
-                i++;
-            }
-
-            return -1;
+            return source.Skip(startIndex).FindIndices(predicate).Select(i => (int?)(i + startIndex)).FirstOrDefault() ?? -1;
         }
 
         /// <summary>Returns the index of the last element that satisfies <paramref name="predicate"/>.</summary>
         /// <param name="predicate">The condition to test each element against.</param>
         /// <returns>The zero-based index of the last match, or -1 when there is none.</returns>
         public int FindLastIndex(Func<T, bool> predicate)
-        {
-            Guard.NotNull(source);
-            Guard.NotNull(predicate);
-
-            var last = -1;
-            var i = 0;
-            foreach (var item in source)
-            {
-                if (predicate(item))
-                {
-                    last = i;
-                }
-
-                i++;
-            }
-
-            return last;
-        }
+            => source.FindIndices(predicate).Select(i => (int?)i).LastOrDefault() ?? -1;
 
         /// <summary>Lazily returns the index of every element that satisfies <paramref name="predicate"/>.</summary>
         /// <param name="predicate">The condition to test each element against.</param>

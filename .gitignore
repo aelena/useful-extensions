@@ -165,3 +165,6 @@ $RECYCLE.BIN/
 /.claude/
 /.mcp.json
 /.ignore
+
+# local resume notes for the AI pair, never committed
+/_memoria/
